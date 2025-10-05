@@ -4,6 +4,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
+from admin_form import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,8 +20,8 @@ style.theme_use("clam")
 menu = tk.Menu(main)
 main.config(menu=menu)
 menu_0 = tk.Menu(menu, tearoff=0)
-menu_0.add_command(label="Administrador", command=lambda: print("Administrador clicked"))
-menu_0.add_command(label="Salir", command=lambda: print("Salir clicked"))
+menu_0.add_command(label="Administrador", command=lambda: admin_menu())
+menu_0.add_command(label="Salir", command=lambda: main.destroy())
 menu.add_cascade(label="Opciones", menu=menu_0)
 
 style.configure("button.TButton", background="#000000", foreground="#ffffff")
