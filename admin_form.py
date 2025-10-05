@@ -10,3 +10,6 @@ def admin_menu():
     admin_form.title("Administrador")
     admin_form.geometry("700x400")
     admin_form.config(bg="#ffffff")
+
+    button = ttk.Button(master=admin_form, text="CONSULTAR PRODUCTOS", style="button.TButton")
+    button.place(x=56, y=114, width=175, height=48)
