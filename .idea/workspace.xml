@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="1. ST4RT">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="2. Forms creados, modulación step=1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appointments_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/appointments_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/products_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sells_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/sells_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/services_form.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +50,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.admin_form.executor": "Run",
     "Python.imageLabel.executor": "Run",
     "Python.main.executor": "Run",
     "Python.main_loop.executor": "Run",
@@ -78,7 +83,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759602225812</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="1. Form1 creado e iniciado">
+      <option name="closed" value="true" />
+      <created>1759632320248</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759632320248</updated>
+    </task>
+    <task id="LOCAL-00003" summary="2. Forms creados, modulación step=1">
+      <option name="closed" value="true" />
+      <created>1759634736898</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759634736898</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -94,6 +115,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1. ST4RT" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. ST4RT" />
+    <MESSAGE value="1. Form1 creado e iniciado" />
+    <MESSAGE value="2. Forms creados, modulación step=1" />
+    <option name="LAST_COMMIT_MESSAGE" value="2. Forms creados, modulación step=1" />
   </component>
 </project>
