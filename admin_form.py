@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def reportes():
     reportes_form = tk.Tk()
 
@@ -19,7 +20,46 @@ def admin_menu():
     admin_style = ttk.Style(admin_form)
     admin_style.theme_use("clam")
 
-#Botón de salida
+    admin_style.configure("Custom.TButton",
+                          background="#000000",  # Color de fondo principal (estado normal)
+                          foreground="#ffffff",  # Color del texto
+                          font=('Arial', 10),
+                          # Esto es importante para el estilo 'clam':
+                          bordercolor="#000000",  # Color del borde del botón
+                          darkcolor="#000000",  # Color usado para sombras/bordes oscuros
+                          lightcolor="#333333",  # Color usado para bordes claros (poco visible en clam)
+                          padding=10)
+
+
+    inside_menu = ttk.Notebook(admin_form)
+    inside_menu.pack(expand=True, fill="both", padx=10, pady=10)
+
+    frame_menu_botones = ttk.Frame(inside_menu)
+    frame_menu_botones.pack(expand=True, fill="both")
+    inside_menu.add(frame_menu_botones, text=" Menú Principal ")
+
+    button_ap = ttk.Button(frame_menu_botones, text="AGREGAR PRODUCTO",
+                           style="Custom.TButton",
+                           command=lambda: agregar_producto())
+    button_ap.grid(row=0, column=0, padx=250, pady=(50, 10), sticky="ew")
+
+    button_rep = ttk.Button(frame_menu_botones, text="REPORTES",
+                            style="Custom.TButton",
+                            command=lambda: reportes())
+    button_rep.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
+
+    button_exit = ttk.Button(frame_menu_botones, text="SALIR",
+                             style="Custom.TButton",
+                             command=lambda: admin_form.destroy())
+    button_exit.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+
+    admin_style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor="center")
+    label = ImageLabel(master=admin_form, image_path=os.path.join(BASE_DIR, "assets", "images","pngwing.com.png"),
+                       text="Label", compound=tk.TOP, mode="cover")
+    label.configure(anchor="center")
+    label.place(x=50, y=15, width=403, height=319)
+""" 
+    #Botón de salida
     button = ttk.Button(master=admin_form, text="SALIR", style="button.TButton", command=lambda: admin_form.destroy())
     button.place(x=500, y=340, width=175, height=48)
     admin_style.configure("button.TButton", background="#000000", foreground="#ffffff")
@@ -36,3 +76,4 @@ def admin_menu():
     button_rep.place(x=100, y=340, width=175, height=48)
     admin_style.configure("button_rep.TButton", background="#000000", foreground="#ffffff")
     admin_style.map("button_rep.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
+"""
