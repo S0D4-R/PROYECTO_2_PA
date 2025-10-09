@@ -4,11 +4,11 @@ from PIL import Image, ImageTk
 from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-def reportes():
-    reportes_form = tk.Tk()
+def reportes(menu, frame_reportes, style):
+    menu.select(frame_reportes)
 
 
-def agregar_producto(menu, frame_add_prods):
+def agregar_producto(menu, frame_add_prods, style):
     menu.select(frame_add_prods)
 
 
@@ -50,12 +50,12 @@ def admin_menu():
 #Botones--------------------------------------------------------------------------------------------------------
     button_ap = ttk.Button(frame_menu_inicial, text="AGREGAR PRODUCTO",
                            style="Custom.TButton",
-                           command=lambda: agregar_producto(inside_menu, frame_add_prods))
+                           command=lambda: agregar_producto(inside_menu, frame_add_prods, admin_style))
     button_ap.grid(row=0, column=0, padx=250, pady=(50, 10), sticky="ew")
 
     button_rep = ttk.Button(frame_menu_inicial, text="REPORTES",
                             style="Custom.TButton",
-                            command=lambda: reportes())
+                            command=lambda: reportes(inside_menu, frame_reports, admin_style))
     button_rep.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
