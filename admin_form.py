@@ -8,8 +8,8 @@ def reportes():
     reportes_form = tk.Tk()
 
 
-def agregar_producto():
-    prod_form = tk.Tk()
+def agregar_producto(menu, frame_add_prods):
+    menu.select(frame_add_prods)
 
 
 def admin_menu():
@@ -33,31 +33,41 @@ def admin_menu():
 
     inside_menu = ttk.Notebook(admin_form)
     inside_menu.pack(expand=True, fill="both", padx=10, pady=10)
+    #Frame del menú principal
+    frame_menu_inicial = ttk.Frame(inside_menu)
+    frame_menu_inicial.pack(expand=True, fill="both")
+    inside_menu.add(frame_menu_inicial, text=" Menú Principal ")
 
-    frame_menu_botones = ttk.Frame(inside_menu)
-    frame_menu_botones.pack(expand=True, fill="both")
-    inside_menu.add(frame_menu_botones, text=" Menú Principal ")
+    #Frame del menú de agregar productos
+    frame_add_prods = ttk.Frame(inside_menu)
+    frame_add_prods.pack(expand=True, fill="both")
+    inside_menu.add(frame_add_prods, text="AGREGAR PRODUCTOS", state="hidden")
 
-    button_ap = ttk.Button(frame_menu_botones, text="AGREGAR PRODUCTO",
+    # Frame del reporte
+    frame_reports = ttk.Frame(inside_menu)
+    frame_reports.pack(expand=True, fill="both")
+    inside_menu.add(frame_reports, text="REPORTES", state="hidden")
+#Botones--------------------------------------------------------------------------------------------------------
+    button_ap = ttk.Button(frame_menu_inicial, text="AGREGAR PRODUCTO",
                            style="Custom.TButton",
-                           command=lambda: agregar_producto())
+                           command=lambda: agregar_producto(inside_menu, frame_add_prods))
     button_ap.grid(row=0, column=0, padx=250, pady=(50, 10), sticky="ew")
 
-    button_rep = ttk.Button(frame_menu_botones, text="REPORTES",
+    button_rep = ttk.Button(frame_menu_inicial, text="REPORTES",
                             style="Custom.TButton",
                             command=lambda: reportes())
     button_rep.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
-    button_exit = ttk.Button(frame_menu_botones, text="SALIR",
+    button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
                              style="Custom.TButton",
                              command=lambda: admin_form.destroy())
     button_exit.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
-
+# Botones--------------------------------------------------------------------------------------------------------
     admin_style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor="center")
-    label = ImageLabel(master=admin_form, image_path=os.path.join(BASE_DIR, "assets", "images","pngwing.com.png"),
-                       text="Label", compound=tk.TOP, mode="cover")
-    label.configure(anchor="center")
-    label.place(x=50, y=15, width=403, height=319)
+    #label = ImageLabel(master=admin_form, image_path=os.path.join(BASE_DIR, "assets", "images","pngwing.com.png"),
+                       #text="Label", compound=tk.TOP, mode="cover")
+    #label.configure(anchor="center")
+    #label.place(x=50, y=15, width=403, height=319)
 """ 
     #Botón de salida
     button = ttk.Button(master=admin_form, text="SALIR", style="button.TButton", command=lambda: admin_form.destroy())

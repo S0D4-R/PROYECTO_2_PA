@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="2. Forms creados, modulación step=1">
+    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="6. Copy de botones y notebook">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appointments_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/appointments_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/products_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sells_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/sells_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/services_form.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,19 +43,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.admin_form.executor": "Run",
-    "Python.imageLabel.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.main_loop.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Y.V/Landivar/Segundo_Semestre/Progra_avanzada/Proyecto2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.admin_form.executor&quot;: &quot;Run&quot;,
+    &quot;Python.imageLabel.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main_loop.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Y.V/Landivar/Segundo_Semestre/Progra_avanzada/Proyecto2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -99,7 +96,39 @@
       <option name="project" value="LOCAL" />
       <updated>1759634736898</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="3. Forms creados con títulos">
+      <option name="closed" value="true" />
+      <created>1759638368437</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759638368437</updated>
+    </task>
+    <task id="LOCAL-00005" summary="4. Main form as terminal created">
+      <option name="closed" value="true" />
+      <created>1759639219408</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1759639219408</updated>
+    </task>
+    <task id="LOCAL-00006" summary="5. PROGRESO EN MENU ADMIN">
+      <option name="closed" value="true" />
+      <created>1759643114104</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1759643114104</updated>
+    </task>
+    <task id="LOCAL-00007" summary="6. Copy de botones y notebook">
+      <option name="closed" value="true" />
+      <created>1759646929990</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1759646929990</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -117,6 +146,10 @@
     <MESSAGE value="1. ST4RT" />
     <MESSAGE value="1. Form1 creado e iniciado" />
     <MESSAGE value="2. Forms creados, modulación step=1" />
-    <option name="LAST_COMMIT_MESSAGE" value="2. Forms creados, modulación step=1" />
+    <MESSAGE value="3. Forms creados con títulos" />
+    <MESSAGE value="4. Main form as terminal created" />
+    <MESSAGE value="5. PROGRESO EN MENU ADMIN" />
+    <MESSAGE value="6. Copy de botones y notebook" />
+    <option name="LAST_COMMIT_MESSAGE" value="6. Copy de botones y notebook" />
   </component>
 </project>
