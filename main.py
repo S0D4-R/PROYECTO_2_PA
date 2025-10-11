@@ -24,7 +24,7 @@ style.theme_use("clam")
 menu = tk.Menu(main)
 main.config(menu=menu)
 menu_0 = tk.Menu(menu, tearoff=0)
-menu_0.add_command(label="Administrador", command=lambda: admin_menu())
+menu_0.add_command(label="Administrador", command=lambda: login())
 menu_0.add_command(label="Salir", command=lambda: main.destroy())
 menu.add_cascade(label="Opciones", menu=menu_0)
 
