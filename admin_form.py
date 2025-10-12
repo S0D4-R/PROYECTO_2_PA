@@ -2,27 +2,45 @@ import os
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
+from tkinter import messagebox
+import json
 from pyuiWidgets.imageLabel import ImageLabel
+PASSWORD_FILE = "password.json"
+DEFAULT_PASSWORD = "123"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class Lord:
     def __init__(self):
-        self.__password = "123"
+        try:
+            with open(PASSWORD_FILE, 'r') as f:
+                data = json.load(f)
+                self.__password = data.get("password", DEFAULT_PASSWORD)
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.__password = DEFAULT_PASSWORD
+            self._save_password()
+
+    def _save_password(self):
+        with open(PASSWORD_FILE, 'w') as p_file:
+            json.dump({"password": self.__password}, p_file)
 
     @property
     def contra(self):
         return self.__password
     @contra.setter
     def contra(self, new_password):
+        if new_password == self.__password:
+            messagebox.showinfo("La contraseña no puede ser igual a la anterior")
+        else:
+            self.__password = new_password
+            messagebox.showinfo("La contraseña ha sido actualizada exitosamente")
 
 
-
-
+lord = Lord()
 
 
 #LOGIN----------------------------------------------------------------------------------------------------------
 def get_info(frame, entry):
     temp_pass = entry.get()
-    if temp_pass == "123":
+    if temp_pass == lord.contra:
         frame.destroy()
         return admin_menu()
     else:
@@ -80,7 +98,12 @@ def agregar_producto(menu, frame_add_prods, style):
     exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton")
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
+def change_pass():
+    pass
 #ADMIN MENU----------------------------------------------------------------------------------------------------
+
+
+
 def admin_menu():
     admin_form = tk.Tk()
     admin_form.title("Administrador")
@@ -116,6 +139,11 @@ def admin_menu():
     frame_reports = ttk.Frame(inside_menu)
     frame_reports.pack(expand=True, fill="both")
     inside_menu.add(frame_reports, text="REPORTES", state="hidden")
+
+    #Frame de cambio de contraseña
+    frame_cambio_c = ttk.Frame(inside_menu)
+    frame_cambio_c.pack(expand=True, fill="both")
+    inside_menu.add(frame_cambio_c, text="CAMBIAR CONTRASEÑA", state="hidden")
 #Botones--------------------------------------------------------------------------------------------------------
     button_ap = ttk.Button(frame_menu_inicial, text="AGREGAR PRODUCTO",
                            style="Custom.TButton",
@@ -130,7 +158,14 @@ def admin_menu():
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
                              style="Custom.TButton",
                              command=lambda: admin_form.destroy())
-    button_exit.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+    button_exit.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+
+    button_change_p = ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA",
+                            style="Custom.TButton",
+                            command=lambda: change_pass())
+    button_change_p.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+
+
 # Botones--------------------------------------------------------------------------------------------------------
     admin_style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor="center")
     #label = ImageLabel(master=admin_form, image_path=os.path.join(BASE_DIR, "assets", "images","pngwing.com.png"),
