@@ -57,13 +57,12 @@ def login():
     gen_style = ttk.Style(login_form)
     gen_style.theme_use("clam")
     gen_style.configure("Custom.TButton",
-                          background="#000000",  # Color de fondo principal (estado normal)
-                          foreground="#ffffff",  # Color del texto
+                          background="#000000",
+                          foreground="#ffffff",
                           font=('Arial', 10),
-                          # Esto es importante para el estilo 'clam':
-                          bordercolor="#000000",  # Color del borde del botón
-                          darkcolor="#000000",  # Color usado para sombras/bordes oscuros
-                          lightcolor="#333333",  # Color usado para bordes claros (poco visible en clam)
+                          bordercolor="#000000",
+                          darkcolor="#000000",
+                          lightcolor="#333333",
                           padding=3)
 
 
@@ -91,6 +90,9 @@ def close_tabs(menu, frame1, frame2):
 
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
+    style.configure("Custom.TButton")
+    exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_reportes))
+    exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
 
 def agregar_producto(menu,main_frame,  frame_add_prods, style):
@@ -99,8 +101,24 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
     exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu,main_frame, frame_add_prods))
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
-def change_pass():
-    pass
+
+
+#Password
+def change_pass(menu, main_frame, password_frame, style):
+    #Select tabs------------------------------------------------------------------------------
+    menu.select(password_frame)
+    style.configure("Custom.TButton")
+
+
+
+
+    #Exit Tabs---------------------------------------------------------------------------------
+    exit_button = ttk.Button(password_frame, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, password_frame))
+    exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
+
+    # Save new password
+    n_p_label = tk.Label(password_frame, text="Nueva Contraseña")
+    n_p_label.pack(padx=50, pady=50)
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 
 
@@ -163,7 +181,7 @@ def admin_menu():
 
     button_change_p = ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA",
                             style="Custom.TButton",
-                            command=lambda: change_pass())
+                            command=lambda: change_pass(inside_menu,frame_menu_inicial, frame_cambio_c, admin_style))
     button_change_p.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
 
 
