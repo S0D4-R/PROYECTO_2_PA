@@ -85,17 +85,18 @@ def login():
 
 #TABS-----------------------------------------------------------------------------------------------------------
 def close_tabs(menu, frame1, frame2):
-    pass
+    menu.select(frame1)
+    menu.hide(frame2)
 
 
-def reportes(menu, frame_reportes, style):
+def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
 
 
-def agregar_producto(menu, frame_add_prods, style):
+def agregar_producto(menu,main_frame,  frame_add_prods, style):
     menu.select(frame_add_prods)
     style.configure("Custom.TButton")
-    exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton")
+    exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu,main_frame, frame_add_prods))
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
 def change_pass():
@@ -147,12 +148,12 @@ def admin_menu():
 #Botones--------------------------------------------------------------------------------------------------------
     button_ap = ttk.Button(frame_menu_inicial, text="AGREGAR PRODUCTO",
                            style="Custom.TButton",
-                           command=lambda: agregar_producto(inside_menu, frame_add_prods, admin_style))
+                           command=lambda: agregar_producto(inside_menu,frame_menu_inicial, frame_add_prods, admin_style))
     button_ap.grid(row=0, column=0, padx=250, pady=(50, 10), sticky="ew")
 
     button_rep = ttk.Button(frame_menu_inicial, text="REPORTES",
                             style="Custom.TButton",
-                            command=lambda: reportes(inside_menu, frame_reports, admin_style))
+                            command=lambda: reportes(inside_menu,frame_menu_inicial, frame_reports, admin_style))
     button_rep.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
