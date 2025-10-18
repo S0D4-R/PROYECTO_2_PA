@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="7. HIDDEN TABS">
+      <change beforePath="$PROJECT_DIR$/.idea/Proyecto2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Proyecto2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appointments_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/appointments_form.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +34,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/S0D4-R/PROYECTO_2_PA.git&quot;,
-    &quot;accountId&quot;: &quot;38fedd2a-bf65-47e1-97d5-2e9a047d679e&quot;
+    &quot;accountId&quot;: &quot;072b0255-2fa7-4719-a658-6f933d6ac711&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
