@@ -10,3 +10,15 @@ def services_menu():
     services_form.title("SERVICIOS")
     services_form.geometry("700x400")
     services_form.config(bg="#ffffff")
+
+    style = ttk.Style()
+    style.configure("salir.TButton", background="#FF0000", foreground="#ffffff")
+    style.map("salir.TButton", background=[("active", "#CC0000")])
+
+    boton_salir = ttk.Button(
+        master=services_form,
+        text="Volver al Menu",
+        style="salir.TButton",
+        command=lambda: services_form.destroy()
+    )
+    boton_salir.place(x=20, y=320, width=100, height=35)
