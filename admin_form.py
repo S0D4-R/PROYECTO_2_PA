@@ -104,6 +104,10 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
 
 
 #Password
+def save_pass():
+    pass
+
+
 def change_pass(menu, main_frame, password_frame, style):
     #Select tabs------------------------------------------------------------------------------
     menu.select(password_frame)
@@ -113,12 +117,14 @@ def change_pass(menu, main_frame, password_frame, style):
 
 
     #Exit Tabs---------------------------------------------------------------------------------
+
+    save_button = ttk.Button(password_frame, text="GUARDAR", style="Custom.TButton", command=lambda: save_pass())
+    save_button.grid(row=0, column=0, padx=20, pady=(300, 50), sticky="w")
+
     exit_button = ttk.Button(password_frame, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, password_frame))
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
-    # Save new password
-    n_p_label = tk.Label(password_frame, text="Nueva Contraseña")
-    n_p_label.pack(padx=50, pady=50)
+
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 
 
