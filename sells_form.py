@@ -17,7 +17,7 @@ def sells_menu():
 
     boton_salir = ttk.Button(
         master=sells_form,
-        text="Volver al Menu",
+        text="Volver al Menu ",
         style="salir.TButton",
         command=lambda: sells_form.destroy()
     )

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="1. JD boton volver al menu product forms y appoiments_form" />
+    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="1. JD boton volver al menu sells forms y services_form" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,6 +48,7 @@
     "Python.imageLabel.executor": "Run",
     "Python.main.executor": "Run",
     "Python.main_loop.executor": "Run",
+    "Python.sells_form.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
@@ -150,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760817006695</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="1. JD boton volver al menu sells forms y services_form">
+      <option name="closed" value="true" />
+      <created>1760817406717</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1760817406717</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -174,6 +183,7 @@
     <MESSAGE value="6. Copy de botones y notebook" />
     <MESSAGE value="7. HIDDEN TABS" />
     <MESSAGE value="1. JD boton volver al menu product forms y appoiments_form" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. JD boton volver al menu product forms y appoiments_form" />
+    <MESSAGE value="1. JD boton volver al menu sells forms y services_form" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. JD boton volver al menu sells forms y services_form" />
   </component>
 </project>
