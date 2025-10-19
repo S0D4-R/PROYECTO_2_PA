@@ -129,6 +129,38 @@ def reportes(menu, main_frame, frame_reportes, style):
     exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_reportes))
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
 
+#New Prod--------------------------------------------------------------------------------------------------------
+def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
+    connection = get_conn()
+    try:
+        prod_name = name_e.get()
+        prod_brand = brand_e.get()
+        prod_category = categ_e.get()
+        prod_price = float(price_e.get())
+        prod_stock = int(stock_e.get())
+        prod_supplier = supp_e.get()
+
+        with connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                INSERT INTO barbershop_products 
+                (product_name, brand, category, price, stock_quantity, supplier) 
+                VALUES (%s, %s, %s, %s, %s, %s); 
+                """,
+                (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier)
+            )
+
+        connection.commit()
+        messagebox.showinfo("ÉXITO", f"Producto '{prod_name}' guardado con éxito.")
+
+    except ValueError:
+        messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
+    finally:
+        if connection:
+            connection.close()
 
 def agregar_producto(menu,main_frame,  frame_add_prods, style):
     menu.select(frame_add_prods)
@@ -162,17 +194,22 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
     price_entry.grid(row=3, column=1, padx=10, pady=5, sticky="new")
 
     #Stock (ROW 4)
-    stock_label = tk.Label(frame_add_prods, text="Stock:", background="#000000", foreground="#ffffff")
+    stock_label = tk.Label(frame_add_prods, text="Cantidad:", background="#000000", foreground="#ffffff")
     stock_label.grid(row=4, column=0, padx=10, pady=5, sticky="nw")
     stock_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
     stock_entry.grid(row=4, column=1, padx=10, pady=5, sticky="new")
 
+    #Supplier (ROW 5)
+    sup_label = tk.Label(frame_add_prods, text="Proveedor:", background="#000000", foreground="#ffffff")
+    sup_label.grid(row=5, column=0, padx=10, pady=5, sticky="nw")
+    sup_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    sup_entry.grid(row=5, column=1, padx=10, pady=5, sticky="new")
 
     # ---------------------------------------------------------------------------------------------------
 
     frame_add_prods.grid_rowconfigure(6, weight=1)
 
-    save_button = ttk.Button(frame_add_prods, text="GUARDAR", style="Custom.TButton", command=lambda: None)
+    save_button = ttk.Button(frame_add_prods, text="GUARDAR", style="Custom.TButton", command=lambda: add_new_prod(prodname_entry, brand_entry, cat_entry, price_entry, stock_entry, sup_entry))
     save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_add_prods))
