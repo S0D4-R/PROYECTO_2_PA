@@ -107,6 +107,7 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
 def save_pass(entry1, entry2):
     if entry1.get() == entry2.get():
         lord.contra = entry1.get()
+        lord._save_password()
 
 
 def change_pass(menu, main_frame, password_frame, style):
