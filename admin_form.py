@@ -60,7 +60,6 @@ def init_db():
                 category VARCHAR(50),
                 price DECIMAL(10, 2) NOT NULL,
                 stock_quantity INTEGER NOT NULL,
-                description TEXT,
                 supplier VARCHAR(100),
                 date_added DATE DEFAULT CURRENT_DATE,
                 last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -134,8 +133,54 @@ def reportes(menu, main_frame, frame_reportes, style):
 def agregar_producto(menu,main_frame,  frame_add_prods, style):
     menu.select(frame_add_prods)
     style.configure("Custom.TButton")
-    exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu,main_frame, frame_add_prods))
-    exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
+
+    frame_add_prods.grid_columnconfigure(0, weight=0)
+    frame_add_prods.grid_columnconfigure(1, weight=1)
+
+    # NOmbre producto (ROW 0)
+    prodname_label = tk.Label(frame_add_prods, text="Nombre del producto:", background="#000000", foreground="#ffffff")
+    prodname_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
+    prodname_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    prodname_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
+
+    # Brand (ROW 1)
+    brand_label = tk.Label(frame_add_prods, text="Marca:", background="#000000", foreground="#ffffff")
+    brand_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
+    brand_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    brand_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
+
+    # Category (ROW 2)
+    cat_label = tk.Label(frame_add_prods, text="Categoría:", background="#000000", foreground="#ffffff")
+    cat_label.grid(row=2, column=0, padx=10, pady=5, sticky="nw")
+    cat_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    cat_entry.grid(row=2, column=1, padx=10, pady=5, sticky="new")
+
+    #Price (ROW 3)
+    price_label = tk.Label(frame_add_prods, text="Precio:", background="#000000", foreground="#ffffff")
+    price_label.grid(row=3, column=0, padx=10, pady=5, sticky="nw")
+    price_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    price_entry.grid(row=3, column=1, padx=10, pady=5, sticky="new")
+
+    #Stock (ROW 4)
+    stock_label = tk.Label(frame_add_prods, text="Stock:", background="#000000", foreground="#ffffff")
+    stock_label.grid(row=4, column=0, padx=10, pady=5, sticky="nw")
+    stock_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    stock_entry.grid(row=4, column=1, padx=10, pady=5, sticky="new")
+
+
+    # ---------------------------------------------------------------------------------------------------
+
+    frame_add_prods.grid_rowconfigure(6, weight=1)
+
+    save_button = ttk.Button(frame_add_prods, text="GUARDAR", style="Custom.TButton", command=lambda: None)
+    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_add_prods))
+    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+
+    menu.add(frame_add_prods, text="AGREGAR PRODUCTOS")
+    menu.select(frame_add_prods)
 
 
 
@@ -154,12 +199,11 @@ def change_pass(menu, main_frame, password_frame, style):
     password_frame.grid_columnconfigure(0, weight=0)
     password_frame.grid_columnconfigure(1, weight=1)
 
-    # --- FORMULARIO (Fila 0) ---
-    # Etiqueta: Fila 0, Columna 0
+
     pass_label = tk.Label(password_frame, text="Nueva Contraseña:", background="#000000", foreground="#ffffff")
     pass_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-    # Campo de Entrada: Fila 0, Columna 1
+
     pass_text = tk.Entry(password_frame, background="#000000", foreground="#ffffff", show="*")
     pass_text.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
