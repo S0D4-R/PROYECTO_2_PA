@@ -18,6 +18,26 @@ def products_menu():
     style.configure("salir.TButton", background="#FF0000", foreground="#ffffff")
     style.map("salir.TButton", background=[("active", "#CC0000")])
 
+    #Mostrar productos
+    try:
+        con = get_conn()
+        cur = con.cursor()
+        cur.execute("SELECT id, product_name, brand, category, price, stock_quantity,description, supplier, date_added, last_updated FROM barbershop_products;")
+        products_in_db = cur.fetchall()
+        con.close()
+        """ 
+        text_area.delete("1.0", tk.END)
+        for p in pacientes:
+            text_area.insert(
+                tk.END,
+                f"ID: {p[0]} | Nombre: {p[1]} | Estado: {p[2]} | Edad: {p[3]} | DPI: {p[4]}\n"
+            )
+        """
+    except Exception as e:
+        messagebox.showerror("Error de BD", str(e))
+
+
+
     boton_salir = ttk.Button(
         master=products_form,
         text="Volver al Menu",
