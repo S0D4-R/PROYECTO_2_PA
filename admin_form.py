@@ -53,7 +53,7 @@ def init_db():
         cur = con.cursor()
         # Productos
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS pacientes (
+            CREATE TABLE IF NOT EXISTS barbershop_products (
                 id SERIAL PRIMARY KEY,
                 product_name VARCHAR(100) NOT NULL,
                 brand VARCHAR(50),
