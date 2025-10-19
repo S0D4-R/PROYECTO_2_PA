@@ -104,25 +104,43 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
 
 
 #Password
-def save_pass():
-    pass
+def save_pass(entry1, entry2):
+    if entry1.get() == entry2.get():
+        lord.contra = entry1.get()
 
 
 def change_pass(menu, main_frame, password_frame, style):
     #Select tabs------------------------------------------------------------------------------
     menu.select(password_frame)
     style.configure("Custom.TButton")
+    # label
+    password_frame.grid_columnconfigure(0, weight=0)
+    password_frame.grid_columnconfigure(1, weight=1)
 
+    # --- FORMULARIO (Fila 0) ---
+    # Etiqueta: Fila 0, Columna 0
+    pass_label = tk.Label(password_frame, text="Nueva Contraseña:", background="#000000", foreground="#ffffff")
+    pass_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
+    # Campo de Entrada: Fila 0, Columna 1
+    pass_text = tk.Entry(password_frame, background="#000000", foreground="#ffffff", show="*")
+    pass_text.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
+    c_pass_label = tk.Label(password_frame, text="Confirmación de Contraseña:", background="#000000", foreground="#ffffff")
+    c_pass_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+    c_pass_entry = tk.Entry(password_frame, background="#000000", foreground="#ffffff", show="*")
+    c_pass_entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+
+    password_frame.grid_rowconfigure(2, weight=1)
 
     #Exit Tabs---------------------------------------------------------------------------------
 
-    save_button = ttk.Button(password_frame, text="GUARDAR", style="Custom.TButton", command=lambda: save_pass())
-    save_button.grid(row=0, column=0, padx=20, pady=(300, 50), sticky="w")
+    save_button = ttk.Button(password_frame, text="GUARDAR", style="Custom.TButton", command=lambda: save_pass(pass_text, c_pass_entry))
+    save_button.grid(row=3, column=0, padx=10, pady=(10, 10), sticky="w")  # Sticky W para alinearlo a la izquierda
 
     exit_button = ttk.Button(password_frame, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, password_frame))
-    exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
+    exit_button.grid(row=3, column=1, padx=10, pady=(10, 10), sticky="e")  # Sticky E para alinearlo a la derecha
 
 
 #ADMIN MENU----------------------------------------------------------------------------------------------------
