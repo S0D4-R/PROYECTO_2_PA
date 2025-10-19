@@ -28,10 +28,10 @@ class Lord:
     @contra.setter
     def contra(self, new_password):
         if new_password == self.__password:
-            messagebox.showinfo("La contraseña no puede ser igual a la anterior")
+            messagebox.showinfo("Error", "La contraseña no puede ser igual a la anterior")
         else:
             self.__password = new_password
-            messagebox.showinfo("La contraseña ha sido actualizada exitosamente")
+            messagebox.showinfo("Éxito", "El cambio ha sido exitoso")
 
 
 lord = Lord()
@@ -70,7 +70,7 @@ def login():
     pass_label = tk.Label(login_form, text="CONTRASEÑA:", background="#ffffff", foreground="#000000")
     pass_label.grid(row=0, column=0, padx=10, pady=30, sticky="w")
     #textbox
-    pass_text = tk.Entry(login_form, background="#000000", foreground="#ffffff")
+    pass_text = tk.Entry(login_form, background="#000000", foreground="#ffffff", show="*")
     pass_text.grid(row=0, column=0, padx=100, pady=30, sticky="w")
 
     #Botón get
