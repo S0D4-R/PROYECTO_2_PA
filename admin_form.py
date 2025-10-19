@@ -157,13 +157,12 @@ def admin_menu():
     admin_style.theme_use("clam")
 
     admin_style.configure("Custom.TButton",
-                          background="#000000",  # Color de fondo principal (estado normal)
-                          foreground="#ffffff",  # Color del texto
+                          background="#000000",
+                          foreground="#ffffff",
                           font=('Arial', 10),
-                          # Esto es importante para el estilo 'clam':
-                          bordercolor="#000000",  # Color del borde del botón
-                          darkcolor="#000000",  # Color usado para sombras/bordes oscuros
-                          lightcolor="#333333",  # Color usado para bordes claros (poco visible en clam)
+                          bordercolor="#000000",
+                          darkcolor="#000000",
+                          lightcolor="#333333",
                           padding=10)
 
 
