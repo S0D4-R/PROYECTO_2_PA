@@ -5,8 +5,16 @@ from tkinter import ttk
 from tkinter import messagebox
 import json
 from pyuiWidgets.imageLabel import ImageLabel
+import  psycopg2
 PASSWORD_FILE = "password.json"
 DEFAULT_PASSWORD = "123"
+PG_CONFIG = {
+    "host": "ep-spring-field-adn3pad6-pooler.c-2.us-east-1.aws.neon.tech",
+    "dbname": "neondb",
+    "user": "neondb_owner",
+    "password": "npg_oWvxAFjh8d0R",
+    "sslmode": "require"
+}
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class Lord:
     def __init__(self):
@@ -35,6 +43,34 @@ class Lord:
 
 
 lord = Lord()
+
+#DB_CONN----------------------------------------------------------------------------------------------------------------
+def get_conn():
+    return psycopg2.connect(**PG_CONFIG)
+def init_db():
+    try:
+        con = get_conn()
+        cur = con.cursor()
+        # Productos
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS pacientes (
+                id SERIAL PRIMARY KEY,
+                product_name VARCHAR(100) NOT NULL,
+                brand VARCHAR(50),
+                category VARCHAR(50),
+                price DECIMAL(10, 2) NOT NULL,
+                stock_quantity INTEGER NOT NULL,
+                description TEXT,
+                supplier VARCHAR(100),
+                date_added DATE DEFAULT CURRENT_DATE,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        con.commit()
+        con.close()
+    except Exception as e:
+        messagebox.showerror("Error de BD", f"No se pudo inicializar la BD:\n{e}")
+
 
 
 #LOGIN----------------------------------------------------------------------------------------------------------
@@ -103,7 +139,7 @@ def agregar_producto(menu,main_frame,  frame_add_prods, style):
 
 
 
-#Password
+#Password---------------------------------------------------------------------------------------------------------------
 def save_pass(entry1, entry2):
     if entry1.get() == entry2.get():
         lord.contra = entry1.get()

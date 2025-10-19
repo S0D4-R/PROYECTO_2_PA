@@ -2,8 +2,11 @@ import os
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
+from admin_form import *
 from pyuiWidgets.imageLabel import ImageLabel
 
+get_conn()
+init_db()
 
 def products_menu():
     products_form = tk.Tk()
