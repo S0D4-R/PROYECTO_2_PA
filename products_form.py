@@ -14,15 +14,46 @@ def products_menu():
     products_form.geometry("700x400")
     products_form.config(bg="#ffffff")
 
-    style = ttk.Style()
-    style.configure("salir.TButton", background="#FF0000", foreground="#ffffff")
-    style.map("salir.TButton", background=[("active", "#CC0000")])
 
+    #Treeview
+    admin_style = ttk.Style(products_form)
+    admin_style.theme_use("clam")
+    admin_style.configure("Treeview",
+                          background="#000000",
+                          foreground="#ffffff",
+                          fieldbackground="#000000",
+                          bordercolor="#000000",
+                          rowheight=25)
+
+    # 2. Configurar el estilo de los ENCABEZADOS (T.Heading)
+    admin_style.configure("Treeview.Heading",
+                          background="#333333",
+                          foreground="#ffffff",
+                          font=('Arial', 10, 'bold'))
+
+
+    admin_style.map('Treeview',
+                    background=[('selected', '#333333')],
+                    foreground=[('selected', '#ffffff')])
+
+    # 4. Crear el Treeview
+    main_table = ttk.Treeview(products_form,
+                              columns=("1", "2", "3", "4", "5", "6", "7", "8","9"), show="headings")
+    main_table.heading("1", text="ID")
+    main_table.heading("2", text="Producto")
+    main_table.heading("3", text="Marca")
+    main_table.heading("4", text="Tipo")
+    main_table.heading("5", text="Precio")
+    main_table.heading("6", text="Stock")
+    main_table.heading("7", text="Proveedor")
+    main_table.heading("8", text="Agregado")
+    main_table.heading("9", text="Modificado")
+    main_table.pack(expand=True, fill='both')
     #Mostrar productos
     try:
         con = get_conn()
         cur = con.cursor()
-        cur.execute("SELECT id, product_name, brand, category, price, stock_quantity,description, supplier, date_added, last_updated FROM barbershop_products;")
+        cur.execute("SELECT id, product_name, brand, category, price, stock_quantity, supplier, date_added, last_updated FROM barbershop_products;")
         products_in_db = cur.fetchall()
         con.close()
         """ 
