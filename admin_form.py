@@ -65,6 +65,26 @@ def init_db():
                 last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
+
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS b_services (
+            id VARCHAR(10) PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            price NUMERIC(10, 2) NOT NULL
+        );
+        """)
+
+        cur.execute("""
+                CREATE TABLE IF NOT EXISTS barbershop_appointments (
+                    id VARCHAR(10) PRIMARY KEY,
+                    client_name VARCHAR(100) NOT NULL,
+                    service_id VARCHAR(10) REFERENCES b_services(id),
+                    appointment_date DATE NOT NULL,
+                    appointment_time TIME NOT NULL,
+                    status VARCHAR(20) DEFAULT 'Scheduled'
+                );
+                """)
+
         con.commit()
         con.close()
     except Exception as e:
