@@ -67,11 +67,11 @@ def init_db():
         """)
 
         cur.execute("""
-        CREATE TABLE IF NOT EXISTS b_services (
-            id VARCHAR(10) PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            price NUMERIC(10, 2) NOT NULL
-        );
+            CREATE TABLE IF NOT EXISTS b_services (
+                id VARCHAR(10) PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                price NUMERIC(10, 2) NOT NULL
+            );
         """)
 
         cur.execute("""
@@ -82,6 +82,17 @@ def init_db():
                     appointment_date DATE NOT NULL,
                     appointment_time TIME NOT NULL,
                     status VARCHAR(20) DEFAULT 'Scheduled'
+                );
+                """)
+
+        cur.execute("""
+                CREATE TABLE IF NOT EXISTS barbershop_sales (
+                    id SERIAL PRIMARY KEY,
+                    sale_date DATE NOT NULL,
+                    product_id INTEGER REFERENCES barbershop_products(id),
+                    service_id VARCHAR(10) REFERENCES b_services(id),
+                    quantity INTEGER NOT NULL,
+                    total_amount NUMERIC(10,2) NOT NULL
                 );
                 """)
 
