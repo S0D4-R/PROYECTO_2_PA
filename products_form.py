@@ -11,7 +11,7 @@ init_db()
 def products_menu():
     products_form = tk.Tk()
     products_form.title("PRODUCTOS")
-    products_form.geometry("700x400")
+    products_form.geometry("1780x720")
     products_form.config(bg="#ffffff")
 
 
@@ -25,7 +25,7 @@ def products_menu():
                           bordercolor="#000000",
                           rowheight=25)
 
-    # 2. Configurar el estilo de los ENCABEZADOS (T.Heading)
+    #Configurar el estilo de los ENCABEZADOS (T.Heading)
     admin_style.configure("Treeview.Heading",
                           background="#333333",
                           foreground="#ffffff",
@@ -36,7 +36,7 @@ def products_menu():
                     background=[('selected', '#333333')],
                     foreground=[('selected', '#ffffff')])
 
-    # 4. Crear el Treeview
+    #Crear el Treeview
     main_table = ttk.Treeview(products_form,
                               columns=("1", "2", "3", "4", "5", "6", "7", "8","9"), show="headings")
     main_table.heading("1", text="ID")
@@ -50,20 +50,36 @@ def products_menu():
     main_table.heading("9", text="Modificado")
     main_table.pack(expand=True, fill='both')
     #Mostrar productos
+    # Columna ID (estrecha)
+    main_table.column("1", width=30, anchor=tk.CENTER, stretch=tk.NO)
+    # Columna Producto (más ancha)
+    main_table.column("2", width=150, anchor=tk.W, stretch=tk.YES)
+    # Otras columnas
+    main_table.column("3", width=80, anchor=tk.W)
+    main_table.column("4", width=80, anchor=tk.W)
+    main_table.column("5", width=60, anchor=tk.E)  # Precio alineado a la derecha (E)
+    main_table.column("6", width=50, anchor=tk.CENTER)
+    main_table.column("7", width=120, anchor=tk.W)
+    main_table.column("8", width=100, anchor=tk.CENTER)
+    main_table.column("9", width=100, anchor=tk.CENTER)
+
+    main_table.pack(expand=True, fill='both')
+
+    # Mostrar productos
     try:
         con = get_conn()
         cur = con.cursor()
-        cur.execute("SELECT id, product_name, brand, category, price, stock_quantity, supplier, date_added, last_updated FROM barbershop_products;")
+        cur.execute(
+            "SELECT id, product_name, brand, category, price, stock_quantity, supplier, date_added, last_updated FROM barbershop_products;")
         products_in_db = cur.fetchall()
+
+        # 3. Iteración: Usar index=tk.END para agregar al final (más limpio)
+        for product in products_in_db:
+            # El objeto 'product' ya es una tupla, no necesitas crear 'data_p'
+            main_table.insert(parent="", index=tk.END, values=product)
+
         con.close()
-        """ 
-        text_area.delete("1.0", tk.END)
-        for p in pacientes:
-            text_area.insert(
-                tk.END,
-                f"ID: {p[0]} | Nombre: {p[1]} | Estado: {p[2]} | Edad: {p[3]} | DPI: {p[4]}\n"
-            )
-        """
+
     except Exception as e:
         messagebox.showerror("Error de BD", str(e))
 
