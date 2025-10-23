@@ -84,3 +84,8 @@ def id_creation(typeP):
         return "VNT" + str(ran_code1) + str(ran_code2)
     else:
         return None
+
+#TABS-------------------------------------------------------------------------------------------------------------------
+def close_tabs(menu, frame1, frame2):
+    menu.select(frame1)
+    menu.hide(frame2)

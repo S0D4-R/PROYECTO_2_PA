@@ -85,11 +85,6 @@ def login():
 
 
 #TABS-----------------------------------------------------------------------------------------------------------
-def close_tabs(menu, frame1, frame2):
-    menu.select(frame1)
-    menu.hide(frame2)
-
-
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
     style.configure("Custom.TButton")
