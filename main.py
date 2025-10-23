@@ -37,7 +37,7 @@ button.place(x=56, y=114, width=175, height=48)
 style.configure("button1.TButton", background="#000000", foreground="#ffffff")
 style.map("button1.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
-button1 = ttk.Button(master=main, text="CONSULTAR CITAS", style="button1.TButton", command=lambda: appointments_menu())
+button1 = ttk.Button(master=main, text="CITAS", style="button1.TButton", command=lambda: appointments_menu())
 button1.place(x=55, y=40, width=175, height=48)
 
 style.configure("button2.TButton", background="#000000", foreground="#ffffff")
@@ -56,6 +56,7 @@ style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor=
 label = ImageLabel(master=main, image_path=os.path.join(BASE_DIR, "assets", "images", "470003012_122127259964547018_3132964216531262546_n.jpg"), text="Label", compound=tk.TOP, mode="cover")
 label.configure(anchor="center")
 label.place(x=279, y=15, width=403, height=319)
+
 
 
 main.mainloop()

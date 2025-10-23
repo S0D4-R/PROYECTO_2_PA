@@ -12,7 +12,7 @@ def sells_menu():
     sells_form.config(bg="#ffffff")
 
     style = ttk.Style()
-    style.configure("salir.TButton", background="#FF0000", foreground="#ffffff")
+    style.configure("salir.TButton", background="#000000", foreground="#ffffff")
     style.map("salir.TButton", background=[("active", "#CC0000")])
 
     boton_salir = ttk.Button(

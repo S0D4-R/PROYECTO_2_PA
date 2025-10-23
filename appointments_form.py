@@ -1,25 +1,145 @@
 import os
 import tkinter as tk
 from PIL import Image, ImageTk
-from tkinter import ttk
-from pyuiWidgets.imageLabel import ImageLabel
+from tkinter import ttk, messagebox
+from admin_form import get_conn
+from general_processes import id_creation
 
 
 def appointments_menu():
-    appointments_form = tk.Tk()
-    appointments_form.title("CITAS")
-    appointments_form.geometry("700x400")
-    appointments_form.config(bg="#ffffff")
+    citas_win = tk.Toplevel()
+    citas_win.title("Gestión de Citas")
+    citas_win.geometry("900x500")
+    citas_win.config(bg="#ffffff")
 
+    ttk.Label(citas_win, text="GESTION DE CITAS", background="#ffffff").pack(pady=20)
+
+    contenedor = ttk.Frame(citas_win)
+    contenedor.pack(pady=10)
+
+    frame_form = ttk.Frame(contenedor)
+    frame_form.grid(row=0, column=0, padx=20, pady=10, sticky="n")
+
+    ttk.Label(frame_form, text="ID Cita:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_id = ttk.Entry(frame_form, width=25)
+    entry_id.grid(row=0, column=1, padx=10, pady=5)
+
+    entry_id.insert(0, id_creation("A"))
+    entry_id.config(state="readonly")
+
+    ttk.Label(frame_form, text="Nombre del cliente:").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_nombre = ttk.Entry(frame_form, width=35)
+    entry_nombre.grid(row=1, column=1, padx=10, pady=5)
+
+    ttk.Label(frame_form, text="ID Servicio:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_servicio = ttk.Entry(frame_form, width=25)
+    entry_servicio.grid(row=2, column=1, padx=10, pady=5)
+
+    ttk.Label(frame_form, text="Fecha (AAAA-MM-DD):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_fecha = ttk.Entry(frame_form, width=25)
+    entry_fecha.grid(row=3, column=1, padx=10, pady=5)
+
+    ttk.Label(frame_form, text="Hora (HH:MM):").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    entry_hora = ttk.Entry(frame_form, width=25)
+    entry_hora.grid(row=4, column=1, padx=10, pady=5)
+
+    frame_botones = ttk.Frame(contenedor)
+    frame_botones.grid(row=0, column=1, padx=30, pady=10, sticky="n")
 
     style = ttk.Style()
-    style.configure("salir.TButton", background="#FF0000", foreground="#ffffff")
-    style.map("salir.TButton", background=[("active", "#CC0000")])
+    style.configure("Accion.TButton", font=("Arial", 10, "bold"), padding=6)
 
-    boton_salir = ttk.Button(
-        master=appointments_form,
-        text="Volver al Menu",
-        style="salir.TButton",
-        command=lambda: appointments_form.destroy()
-    )
-    boton_salir.place(x=20, y=320, width=100, height=35)
+    ttk.Button(frame_botones, text="Registrar", style="Accion.TButton", command=lambda: agregar_cita()).pack(fill="x", pady=5)
+    ttk.Button(frame_botones, text="Editar", style="Accion.TButton", command=lambda: editar_cita()).pack(fill="x", pady=5)
+    ttk.Button(frame_botones, text="Eliminar", style="Accion.TButton", command=lambda: eliminar_cita()).pack(fill="x", pady=5)
+    ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=5)
+    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas_win.destroy).pack(fill="x", pady=5)
+
+    columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
+    tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
+    for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
+        tabla.heading(col, text=text)
+        tabla.column(col, width=120)
+    tabla.pack(pady=20, fill="both", expand=True)
+
+    def cargar_citas():
+        tabla.delete(*tabla.get_children())
+        try:
+            con = get_conn()
+            cur = con.cursor()
+            cur.execute("SELECT * FROM barbershop_appointments ORDER BY appointment_date;")
+            for row in cur.fetchall():
+                tabla.insert("", tk.END, values=row)
+            con.close()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudieron cargar las citas:\n{e}")
+
+    def agregar_cita():
+        id_cita = entry_id.get()
+        nombre = entry_nombre.get()
+        servicio = entry_servicio.get()
+        fecha = entry_fecha.get()
+        hora = entry_hora.get()
+
+        if not id_cita or not nombre or not servicio or not fecha or not hora:
+            messagebox.showwarning("Campos incompletos", "Todos los campos son obligatorios.")
+            return
+
+        try:
+            con = get_conn()
+            cur = con.cursor()
+            cur.execute("""
+                INSERT INTO barbershop_appointments (id, client_name, service_id, appointment_date, appointment_time)
+                VALUES (%s, %s, %s, %s, %s);
+            """, (id_cita, nombre, servicio, fecha, hora))
+            con.commit()
+            con.close()
+            messagebox.showinfo("Éxito", "Cita registrada correctamente.")
+            cargar_citas()
+
+            entry_id.config(state="normal")
+            entry_id.delete(0, tk.END)
+            entry_id.insert(0, id_creation("A"))
+            entry_id.config(state="readonly")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo registrar la cita:\n{e}")
+
+    def eliminar_cita():
+        seleccion = tabla.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Selecciona una cita para eliminar.")
+            return
+        item = tabla.item(seleccion[0])
+        id_cita = item["values"][0]
+        try:
+            con = get_conn()
+            cur = con.cursor()
+            cur.execute("DELETE FROM barbershop_appointments WHERE id = %s;", (id_cita,))
+            con.commit()
+            con.close()
+            messagebox.showinfo("Éxito", "Cita eliminada correctamente.")
+            cargar_citas()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo eliminar la cita:\n{e}")
+
+    def editar_cita():
+        seleccion = tabla.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Selecciona una cita para editar.")
+            return
+        item = tabla.item(seleccion[0])
+        id_cita = item["values"][0]
+        nuevo_estado = messagebox.askquestion("Editar estado", "¿Marcar cita como completada?")
+        if nuevo_estado == "si":
+            try:
+                con = get_conn()
+                cur = con.cursor()
+                cur.execute("UPDATE barbershop_appointments SET status = 'Completada' WHERE id = %s;", (id_cita,))
+                con.commit()
+                con.close()
+                cargar_citas()
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo editar la cita:\n{e}")
+
+    cargar_citas()
