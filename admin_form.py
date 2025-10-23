@@ -291,6 +291,74 @@ def change_pass(menu, main_frame, password_frame, style):
     exit_button = ttk.Button(password_frame, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, password_frame))
     exit_button.grid(row=3, column=1, padx=10, pady=(10, 10), sticky="e")  # Sticky E para alinearlo a la derecha
 
+#ADD SERVICES-----------------------------------------------------------------------------------------------------------
+def add_svc(svcname_e, svcprice_e):
+    connection = get_conn()
+    try:
+        svc_name = svcname_e.get()
+        svc_price = float(svcprice_e.get())
+
+
+        with connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                INSERT INTO barbershop_products 
+                (product_name, brand, category, price, stock_quantity, supplier) 
+                VALUES (%s, %s, %s, %s, %s, %s); 
+                """,
+                (svc_name, svc_price)
+            )
+
+        connection.commit()
+        messagebox.showinfo("ÉXITO", f"El servicio '{svc_name}' guardado con éxito.")
+
+    except ValueError:
+        messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
+    finally:
+        if connection:
+            connection.close()
+
+
+
+def add_service(menu, main_frame, new_service_frame, style):
+    menu.select(new_service_frame)
+    style.configure("Custom.TButton")
+
+    new_service_frame.grid_columnconfigure(0, weight=0)
+    new_service_frame.grid_columnconfigure(1, weight=1)
+
+    # Nombre del servicio (ROW 0)
+    svc_name_label = tk.Label(new_service_frame, text="Nombre del producto:", background="#000000", foreground="#ffffff")
+    svc_name_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
+    svc_name_entry = tk.Entry(new_service_frame, background="#000000", foreground="#ffffff")
+    svc_name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
+
+    # Precio (ROW 1)
+    svc_price_label = tk.Label(new_service_frame, text="Precio:", background="#000000", foreground="#ffffff")
+    svc_price_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
+    svc_price_entry = tk.Entry(new_service_frame, background="#000000", foreground="#ffffff")
+    svc_price_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
+
+
+
+    # ---------------------------------------------------------------------------------------------------
+
+    new_service_frame.grid_rowconfigure(6, weight=1)
+
+    save_button = ttk.Button(new_service_frame, text="GUARDAR", style="Custom.TButton",
+                             command=lambda: add_svc(svc_name_entry, svc_price_entry))
+    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    exit_button = ttk.Button(new_service_frame, text="SALIR", style="Custom.TButton",
+                             command=lambda: close_tabs(menu, main_frame, new_service_frame))
+    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    menu.add(new_service_frame, text="AGREGAR PRODUCTOS")
+    menu.select(new_service_frame)
+
 
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 
@@ -326,6 +394,11 @@ def admin_menu():
     frame_add_prods.pack(expand=True, fill="both")
     inside_menu.add(frame_add_prods, text="AGREGAR PRODUCTOS", state="hidden")
 
+    #Frame para agregar servicios
+    frame_add_svc = ttk.Frame(inside_menu)
+    frame_add_svc.pack(expand=True, fill="both")
+    inside_menu.add(frame_add_svc, text="AGREGAR SERVICIO", state="hidden")
+
     # Frame del reporte
     frame_reports = ttk.Frame(inside_menu)
     frame_reports.pack(expand=True, fill="both")
@@ -349,12 +422,19 @@ def admin_menu():
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
                              style="Custom.TButton",
                              command=lambda: admin_form.destroy())
-    button_exit.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+    button_exit.grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+
 
     button_change_p = ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA",
                             style="Custom.TButton",
                             command=lambda: change_pass(inside_menu,frame_menu_inicial, frame_cambio_c, admin_style))
+
     button_change_p.grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+
+    button_add_service = ttk.Button(frame_menu_inicial, text="AGREGAR SERVICIO",
+                                 style="Custom.TButton",
+                                 command=lambda: add_service(inside_menu,frame_menu_inicial,frame_add_svc,admin_style))
+    button_add_service.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
 
 
 # Botones--------------------------------------------------------------------------------------------------------
