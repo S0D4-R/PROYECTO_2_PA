@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
 from admin_form import *
+from general_processes import *
 from pyuiWidgets.imageLabel import ImageLabel
 
 get_conn()
