@@ -13,7 +13,10 @@ PG_CONFIG = {
 
 #DB_CONN----------------------------------------------------------------------------------------------------------------
 def get_conn():
-    return psycopg2.connect(**PG_CONFIG)
+    try:
+        return psycopg2.connect(**PG_CONFIG)
+    except Exception as e:
+        messagebox.showerror("DB ERROR", "Error in DB")
 def init_db():
     try:
         con = get_conn()

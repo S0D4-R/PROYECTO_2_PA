@@ -293,9 +293,6 @@ def add_service(menu, main_frame, new_service_frame, style):
 
 
 #ADMIN MENU----------------------------------------------------------------------------------------------------
-
-
-
 def admin_menu():
     admin_form = tk.Tk()
     admin_form.title("Administrador")
