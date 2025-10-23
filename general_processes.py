@@ -54,7 +54,7 @@ def init_db():
 
         cur.execute("""
                 CREATE TABLE IF NOT EXISTS barbershop_sales (
-                    id SERIAL PRIMARY KEY,
+                    id VARCHAR(10) PRIMARY KEY,
                     sale_date DATE NOT NULL,
                     product_id INTEGER REFERENCES barbershop_products(id),
                     service_id VARCHAR(10) REFERENCES b_services(id),

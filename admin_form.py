@@ -233,24 +233,25 @@ def add_svc(svcname_e, svcprice_e):
     try:
         svc_name = svcname_e.get()
         svc_price = float(svcprice_e.get())
+        svc_id = id_creation("S")
 
 
         with connection:
             cursor = connection.cursor()
             cursor.execute(
                 """
-                INSERT INTO barbershop_products 
-                (product_name, brand, category, price, stock_quantity, supplier) 
-                VALUES (%s, %s, %s, %s, %s, %s); 
+                INSERT INTO b_services 
+                (id, name, price) 
+                VALUES (%s, %s, %s); 
                 """,
-                (svc_name, svc_price)
+                (svc_id, svc_name, svc_price)
             )
 
         connection.commit()
         messagebox.showinfo("ÉXITO", f"El servicio '{svc_name}' guardado con éxito.")
 
     except ValueError:
-        messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
+        messagebox.showerror("ERROR DE DATOS", "El Precio debe ser un número válido.")
     except Exception as e:
         messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
     finally:
@@ -353,7 +354,7 @@ def admin_menu():
     button_rep = ttk.Button(frame_menu_inicial, text="REPORTES",
                             style="Custom.TButton",
                             command=lambda: reportes(inside_menu,frame_menu_inicial, frame_reports, admin_style))
-    button_rep.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
+    button_rep.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
 
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
                              style="Custom.TButton",
@@ -370,7 +371,7 @@ def admin_menu():
     button_add_service = ttk.Button(frame_menu_inicial, text="AGREGAR SERVICIO",
                                  style="Custom.TButton",
                                  command=lambda: add_service(inside_menu,frame_menu_inicial,frame_add_svc,admin_style))
-    button_add_service.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+    button_add_service.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
 
 # Botones--------------------------------------------------------------------------------------------------------
