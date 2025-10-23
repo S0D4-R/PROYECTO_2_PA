@@ -268,7 +268,7 @@ def add_service(menu, main_frame, new_service_frame, style):
     new_service_frame.grid_columnconfigure(1, weight=1)
 
     # Nombre del servicio (ROW 0)
-    svc_name_label = tk.Label(new_service_frame, text="Nombre del producto:", background="#000000", foreground="#ffffff")
+    svc_name_label = tk.Label(new_service_frame, text="Nombre del Servicio:", background="#000000", foreground="#ffffff")
     svc_name_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
     svc_name_entry = tk.Entry(new_service_frame, background="#000000", foreground="#ffffff")
     svc_name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
