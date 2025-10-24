@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from admin_form import get_conn
+from general_processes import get_conn
 from general_processes import id_creation
 
 
@@ -11,6 +11,9 @@ def appointments_menu():
     citas_win.title("Gestión de Citas")
     citas_win.geometry("900x500")
     citas_win.config(bg="#ffffff")
+
+    columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
+    tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
 
     ttk.Label(citas_win, text="GESTION DE CITAS", background="#ffffff").pack(pady=20)
 
@@ -31,9 +34,27 @@ def appointments_menu():
     entry_nombre = ttk.Entry(frame_form, width=35)
     entry_nombre.grid(row=1, column=1, padx=10, pady=5)
 
-    ttk.Label(frame_form, text="ID Servicio:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
-    entry_servicio = ttk.Entry(frame_form, width=25)
-    entry_servicio.grid(row=2, column=1, padx=10, pady=5)
+    try:
+        con = get_conn()
+        cur = con.cursor()
+        cur.execute("SELECT id, name, price FROM b_services;")
+        servicios = cur.fetchall()
+        con.close()
+
+        valores_servicio = [f"{s[0]} - {s[1]}" for s in servicios]
+
+    except Exception as e:
+        valores_servicio = []
+        messagebox.showerror("Error de BD", f"No se pudieron cargar los servicios:\n{e}")
+
+    combo_servicio = ttk.Combobox(
+        frame_form,
+        width=25,
+        values=valores_servicio,
+        state="readonly"
+    )
+    combo_servicio.grid(row=2, column=1, padx=10, pady=5)
+    combo_servicio.set("Seleccione un servicio")
 
     ttk.Label(frame_form, text="Fecha (AAAA-MM-DD):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
     entry_fecha = ttk.Entry(frame_form, width=25)
@@ -55,8 +76,8 @@ def appointments_menu():
     ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=5)
     ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas_win.destroy).pack(fill="x", pady=5)
 
-    columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
-    tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
+    #columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
+    #tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
     for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
         tabla.heading(col, text=text)
         tabla.column(col, width=120)
@@ -77,7 +98,7 @@ def appointments_menu():
     def agregar_cita():
         id_cita = entry_id.get()
         nombre = entry_nombre.get()
-        servicio = entry_servicio.get()
+        servicio = combo_servicio.get()
         fecha = entry_fecha.get()
         hora = entry_hora.get()
 
@@ -86,14 +107,18 @@ def appointments_menu():
             return
 
         try:
+            # Extraer el ID del servicio antes del guion
+            servicio_id = servicio.split(" - ")[0]
+
             con = get_conn()
             cur = con.cursor()
             cur.execute("""
                 INSERT INTO barbershop_appointments (id, client_name, service_id, appointment_date, appointment_time)
                 VALUES (%s, %s, %s, %s, %s);
-            """, (id_cita, nombre, servicio, fecha, hora))
+            """, (id_cita, nombre, servicio_id, fecha, hora))
             con.commit()
             con.close()
+
             messagebox.showinfo("Éxito", "Cita registrada correctamente.")
             cargar_citas()
 
