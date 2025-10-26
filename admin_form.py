@@ -87,47 +87,46 @@ def login():
 
 
 #REPORTES-----------------------------------------------------------------------------------------------------------
+def gen_report(fdate, sdate):
+    pass
+
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
     style.configure("Custom.TButton")
 
-    ttk.Label(frame_reportes, text="Fecha de Inicio:").grid(row=0, column=0, padx=5, pady=5)
+    frame_reportes.grid_columnconfigure(0, weight=0)
+    frame_reportes.grid_columnconfigure(1, weight=1)
 
-    date_frame = ttk.Frame(frame_reportes)
-    date_frame.pack(pady=20, padx=20)
 
-    # --- Selector de Fecha INICIO ---
-    ttk.Label(date_frame, text="Desde:").grid(row=0, column=0, padx=5, pady=5)
+    first_date_label = tk.Label(frame_reportes, text="Fecha de inicio:", background="#000000", foreground="#ffffff")
+    first_date_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
+    first_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
+    first_date_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
+    first_date_entry.insert(0, "DD/MM/AAAA")
 
-    # ¡IMPORTANTE! El master es date_frame, que está dentro de frame_reports.
-    cal_inicio = DateEntry(date_frame, width=12, background='darkblue',
-                           foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
-    cal_inicio.grid(row=0, column=1, padx=5, pady=5)
 
-    # --- Selector de Fecha FIN ---
-    ttk.Label(date_frame, text="Hasta:").grid(row=1, column=0, padx=5, pady=5)
-    cal_fin = DateEntry(date_frame, width=12, background='darkblue',
-                        foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
-    cal_fin.grid(row=1, column=1, padx=5, pady=5)
+    second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#000000", foreground="#ffffff")
+    second_date_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
+    second_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
+    second_date_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
+    second_date_entry.insert(0, "DD/MM/AAAA")
 
-    # Botón
-    ttk.Button(date_frame, text="Generar Reporte").grid(row=2, column=0, columnspan=2, pady=15)
-    # Botones
+
+
+    # ---------------------------------------------------------------------------------------------------
+
+    frame_reportes.grid_rowconfigure(2, weight=1)
+
+    save_button = ttk.Button(frame_reportes, text="GUARDAR", style="Custom.TButton",
+                             command=lambda: gen_report(first_date_entry, second_date_entry))
+    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
     exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton",
                              command=lambda: close_tabs(menu, main_frame, frame_reportes))
-    exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
-def obtener_fechas(cal_inicio, cal_fin):
-    # Para obtener la fecha seleccionada como objeto datetime.date:
-    fecha_inicio = cal_inicio.get_date()
-    fecha_fin = cal_fin.get_date()
+    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
-    # Para obtenerla como string con el formato definido (dd/mm/yyyy):
-    # fecha_inicio_str = cal_inicio.get()
-
-    messagebox.showerror("Hecho", f"Reporte desde: {fecha_inicio} hasta: {fecha_fin}")
-
-
-
+    menu.add(frame_reportes, text="REPORTES")
+    menu.select(frame_reportes)
 
 
 #New Prod--------------------------------------------------------------------------------------------------------
