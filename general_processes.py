@@ -92,3 +92,11 @@ def id_creation(typeP):
 def close_tabs(menu, frame1, frame2):
     menu.select(frame1)
     menu.hide(frame2)
+
+def check_date(date):
+    temp_date = date.split("/")
+    if (int(temp_date[0]) > 31 or int(temp_date[0]) < 0) or (int(temp_date[1]) > 12 or int(temp_date[1]) < 0) or (int(temp_date[2]) > 9999 or int(temp_date[2]) < 0):
+        messagebox.showerror("ERROR", "Fecha inválida")
+        return  False
+    else:
+        return True

@@ -1,5 +1,7 @@
 import os
 import tkinter as tk
+from tkinter.messagebox import showerror
+
 from PIL import Image, ImageTk
 from tkinter import ttk
 from tkinter import messagebox
@@ -87,8 +89,9 @@ def login():
 
 
 #REPORTES-----------------------------------------------------------------------------------------------------------
+
 def gen_report(fdate, sdate):
-    pass
+    check_date(fdate.get())
 
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
@@ -117,7 +120,7 @@ def reportes(menu, main_frame, frame_reportes, style):
 
     frame_reportes.grid_rowconfigure(2, weight=1)
 
-    save_button = ttk.Button(frame_reportes, text="GUARDAR", style="Custom.TButton",
+    save_button = ttk.Button(frame_reportes, text="GENERAR", style="Custom.TButton",
                              command=lambda: gen_report(first_date_entry, second_date_entry))
     save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
