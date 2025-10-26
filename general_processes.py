@@ -94,8 +94,8 @@ def close_tabs(menu, frame1, frame2):
     menu.hide(frame2)
 
 def check_date(date):
-    temp_date = date.split("/")
-    if (int(temp_date[0]) > 31 or int(temp_date[0]) < 0) or (int(temp_date[1]) > 12 or int(temp_date[1]) < 0) or (int(temp_date[2]) > 9999 or int(temp_date[2]) < 0):
+    temp_date = date.split("-")
+    if (int(temp_date[2]) > 31 or int(temp_date[2]) < 0) or (int(temp_date[1]) > 12 or int(temp_date[1]) < 0) or (int(temp_date[0]) > 9999 or int(temp_date[0]) < 0):
         messagebox.showerror("ERROR", "Fecha inválida")
         return  False
     else:

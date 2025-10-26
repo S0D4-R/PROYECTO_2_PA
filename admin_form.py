@@ -90,28 +90,31 @@ def login():
 
 #REPORTES-----------------------------------------------------------------------------------------------------------
 
-def gen_report(fdate, sdate):
-    if check_date(fdate.get()) and check_date(sdate):
+def gen_report(fdate, sdate, treeview):
+    if check_date(fdate.get()) and check_date(sdate.get()):
+        sales_total = 0
         try:
             con = get_conn()
             cur = con.cursor()
             cur.execute(
                 "SELECT * FROM barbershop_sales WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
-            products_in_db = cur.fetchall()
+            sales_in_db = cur.fetchall()
 
-            for product in products_in_db:
-                #main_table.insert(parent="", index=tk.END, values=product)
-                pass
-
+            counter = 0
+            for sale in sales_in_db:
+                counter += 1
+                sales_total += sale[5]
+                treeview.insert(parent="", index=tk.END, values=(sale[0], sale[1], sale[2], sale[3], sale[5]))
             con.close()
-
         except Exception as e:
             messagebox.showerror("Error de BD", str(e))
+        treeview.insert(parent="", index=tk.END, values=(" ", " ", " ", "TOTAL: ", sales_total))
     else:
-        pass
+        messagebox.showerror("ERROR", "Fecha inválida")
 
-def reportes(menu, main_frame, frame_reportes, style):
+def reportes(menu, main_frame, frame_reportes, style, form):
     menu.select(frame_reportes)
+    form.geometry("700x600")
     style.configure("Custom.TButton")
 
     frame_reportes.grid_columnconfigure(0, weight=0)
@@ -122,28 +125,55 @@ def reportes(menu, main_frame, frame_reportes, style):
     first_date_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
     first_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
     first_date_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
-    first_date_entry.insert(0, "DD/MM/AAAA")
+    first_date_entry.insert(0, "AAAA-MM-DD")
 
 
     second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#000000", foreground="#ffffff")
     second_date_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
     second_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
     second_date_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
-    second_date_entry.insert(0, "DD/MM/AAAA")
+    second_date_entry.insert(0, "AAAA-MM-DD")
 
 
+    #Tabla de labels
+    report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6"), show="headings")
+    column_map = {"1": "ID", "2": "Fecha", "3": "Producto", "4": "Servicio", "5": "Total"}
+    for col_id, text in column_map.items():
+        report_table.heading(col_id, text=text, anchor=tk.CENTER)
 
-    # ---------------------------------------------------------------------------------------------------
+    # Configuración de Ancho (CRUCIAL para que se muestren)
+    report_table.column("1", width=30, anchor=tk.CENTER, stretch=tk.NO)
+    report_table.column("2", width=100, anchor=tk.CENTER)
+    report_table.column("3", width=120, anchor=tk.W)
+    report_table.column("4", width=120, anchor=tk.W)
+    report_table.column("5", width=60, anchor=tk.E)
 
-    frame_reportes.grid_rowconfigure(2, weight=1)
 
+    # ¡Añadir el Treeview al grid! Ocupará ambas columnas y se estirará horizontalmente.
+    # Usamos sticky="nsew" para que se estire en las 4 direcciones dentro de la celda.
+    report_table.grid(row=2, column=0, columnspan=2, padx=10, pady=15, sticky="nsew")
+
+    # ---------------------------------------------------------------------
+    # 3. CONFIGURACIÓN DE ESPACIO Y BOTONES
+
+    # Fila 3 debe absorber el espacio, NO la Fila 4 (que es donde suele ir el Treeview, ahora lo pusimos en la Fila 2)
+    # La Fila 3 es la fila VACÍA que empuja los botones hacia abajo.
+    frame_reportes.grid_rowconfigure(3, weight=1)
+    # frame_reportes.grid_rowconfigure(4, weight=1) <--- ESTO ESTABA EMPUJANDO EL TREEVIEW
+
+    # Botones ahora empiezan en la Fila 4 (o 5, dependiendo de donde termine el formulario de fechas)
+    # Asegúrate de que el Treeview (Row 2) tenga un Row vacío debajo (Row 3) con weight=1.
+
+    # BOTONES
     save_button = ttk.Button(frame_reportes, text="GENERAR", style="Custom.TButton",
-                             command=lambda: gen_report(first_date_entry, second_date_entry))
-    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+                             command=lambda: gen_report(first_date_entry, second_date_entry, report_table))
+    save_button.grid(row=4, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
+    # Salir
     exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton",
                              command=lambda: close_tabs(menu, main_frame, frame_reportes))
-    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+    # Mantenemos los botones juntos, por ejemplo, en la fila 5
+    exit_button.grid(row=5, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     menu.add(frame_reportes, text="REPORTES")
     menu.select(frame_reportes)
@@ -403,7 +433,7 @@ def admin_menu():
 
     button_rep = ttk.Button(frame_menu_inicial, text="REPORTES",
                             style="Custom.TButton",
-                            command=lambda: reportes(inside_menu,frame_menu_inicial, frame_reports, admin_style))
+                            command=lambda: reportes(inside_menu,frame_menu_inicial, frame_reports, admin_style, admin_form))
     button_rep.grid(row=3, column=0, padx=250, pady=10, sticky="ew")
 
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
