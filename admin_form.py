@@ -379,7 +379,40 @@ def add_service(menu, main_frame, new_service_frame, style):
     menu.add(new_service_frame, text="AGREGAR PRODUCTOS")
     menu.select(new_service_frame)
 
+#Modify Elimate---------------------------------------------------------------------------------------------------------
+def mod_elm_prods():
+    pass
 
+def modify_eliminate(menu, main_frame, style):
+    #Tabs
+    mod_prods = ttk.Frame(menu)
+    mod_prods.pack(expand=True, fill="both")
+    menu.add(mod_prods, text="MODIFICAR/ELIMINAR", state="hidden")
+
+    prod_mod_e = ttk.Frame(menu)
+    prod_mod_e.pack(expand=True, fill="both")
+    menu.add(prod_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
+
+    svc_mod_e = ttk.Frame(menu)
+    svc_mod_e.pack(expand=True, fill="both")
+    menu.add(svc_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
+
+    #Menu selection----------------------------------------------------------------------
+    menu.select(mod_prods)
+    style.configure("Custom.TButton")
+
+    mod_prods.grid_columnconfigure(0, weight=0)
+    mod_prods.grid_columnconfigure(1, weight=1)
+
+    mod_prods.grid_rowconfigure(6, weight=1)
+
+    save_button = ttk.Button(mod_prods, text="GUARDAR", style="Custom.TButton",
+                             command=lambda: mod_elm_prods())
+    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    exit_button = ttk.Button(mod_prods, text="SALIR", style="Custom.TButton",
+                             command=lambda: close_tabs(menu, main_frame, mod_prods))
+    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 def admin_menu():
     admin_form = tk.Tk()
@@ -439,7 +472,7 @@ def admin_menu():
     button_exit = ttk.Button(frame_menu_inicial, text="SALIR",
                              style="Custom.TButton",
                              command=lambda: admin_form.destroy())
-    button_exit.grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+    button_exit.grid(row=5, column=0, padx=250, pady=10, sticky="ew")
 
 
     button_change_p = ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA",
@@ -453,10 +486,11 @@ def admin_menu():
                                  command=lambda: add_service(inside_menu,frame_menu_inicial,frame_add_svc,admin_style))
     button_add_service.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
+    button_add_service = ttk.Button(frame_menu_inicial, text="MODIFICAR/ELIMINAR REGISTROS",
+                                    style="Custom.TButton",
+                                    command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style))
+    button_add_service.grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+
 
 # Botones--------------------------------------------------------------------------------------------------------
     admin_style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor="center")
-    #label = ImageLabel(master=admin_form, image_path=os.path.join(BASE_DIR, "assets", "images","pngwing.com.png"),
-                       #text="Label", compound=tk.TOP, mode="cover")
-    #label.configure(anchor="center")
-    #label.place(x=50, y=15, width=403, height=319)
