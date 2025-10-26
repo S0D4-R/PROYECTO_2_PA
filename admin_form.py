@@ -7,6 +7,8 @@ import json
 from pyuiWidgets.imageLabel import ImageLabel
 import  psycopg2
 from general_processes import *
+from tkcalendar import DateEntry
+import datetime
 PASSWORD_FILE = "password.json"
 DEFAULT_PASSWORD = "123"
 
@@ -84,12 +86,49 @@ def login():
 
 
 
-#TABS-----------------------------------------------------------------------------------------------------------
+#REPORTES-----------------------------------------------------------------------------------------------------------
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
     style.configure("Custom.TButton")
-    exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_reportes))
+
+    ttk.Label(frame_reportes, text="Fecha de Inicio:").grid(row=0, column=0, padx=5, pady=5)
+
+    date_frame = ttk.Frame(frame_reportes)
+    date_frame.pack(pady=20, padx=20)
+
+    # --- Selector de Fecha INICIO ---
+    ttk.Label(date_frame, text="Desde:").grid(row=0, column=0, padx=5, pady=5)
+
+    # ¡IMPORTANTE! El master es date_frame, que está dentro de frame_reports.
+    cal_inicio = DateEntry(date_frame, width=12, background='darkblue',
+                           foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
+    cal_inicio.grid(row=0, column=1, padx=5, pady=5)
+
+    # --- Selector de Fecha FIN ---
+    ttk.Label(date_frame, text="Hasta:").grid(row=1, column=0, padx=5, pady=5)
+    cal_fin = DateEntry(date_frame, width=12, background='darkblue',
+                        foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy')
+    cal_fin.grid(row=1, column=1, padx=5, pady=5)
+
+    # Botón
+    ttk.Button(date_frame, text="Generar Reporte").grid(row=2, column=0, columnspan=2, pady=15)
+    # Botones
+    exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton",
+                             command=lambda: close_tabs(menu, main_frame, frame_reportes))
     exit_button.grid(row=0, column=0, padx=550, pady=(300, 50), sticky="ew")
+def obtener_fechas(cal_inicio, cal_fin):
+    # Para obtener la fecha seleccionada como objeto datetime.date:
+    fecha_inicio = cal_inicio.get_date()
+    fecha_fin = cal_fin.get_date()
+
+    # Para obtenerla como string con el formato definido (dd/mm/yyyy):
+    # fecha_inicio_str = cal_inicio.get()
+
+    messagebox.showerror("Hecho", f"Reporte desde: {fecha_inicio} hasta: {fecha_fin}")
+
+
+
+
 
 #New Prod--------------------------------------------------------------------------------------------------------
 def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
