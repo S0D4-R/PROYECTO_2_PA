@@ -91,7 +91,24 @@ def login():
 #REPORTES-----------------------------------------------------------------------------------------------------------
 
 def gen_report(fdate, sdate):
-    check_date(fdate.get())
+    if check_date(fdate.get()) and check_date(sdate):
+        try:
+            con = get_conn()
+            cur = con.cursor()
+            cur.execute(
+                "SELECT * FROM barbershop_sales WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
+            products_in_db = cur.fetchall()
+
+            for product in products_in_db:
+                #main_table.insert(parent="", index=tk.END, values=product)
+                pass
+
+            con.close()
+
+        except Exception as e:
+            messagebox.showerror("Error de BD", str(e))
+    else:
+        pass
 
 def reportes(menu, main_frame, frame_reportes, style):
     menu.select(frame_reportes)
