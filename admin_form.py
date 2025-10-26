@@ -384,7 +384,7 @@ def add_service(menu, main_frame, new_service_frame, style):
 def admin_menu():
     admin_form = tk.Tk()
     admin_form.title("Administrador")
-    admin_form.geometry("700x400")
+    admin_form.geometry("700x600")
     admin_form.config(bg="#ffffff")
     admin_style = ttk.Style(admin_form)
     admin_style.theme_use("clam")
