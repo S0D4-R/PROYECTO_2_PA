@@ -384,6 +384,9 @@ def mod_elm_prods(menu, main_mod_m, m_e_p, style):
     menu.select(m_e_p)
     style.configure("Custom.TButton")
 
+
+
+
 def modify_eliminate(menu, main_frame, style):
     #Tabs
     mod_prods = ttk.Frame(menu)
@@ -407,13 +410,17 @@ def modify_eliminate(menu, main_frame, style):
 
     mod_prods.grid_rowconfigure(6, weight=1)
 
-    save_button = ttk.Button(mod_prods, text="GUARDAR", style="Custom.TButton",
-                             command=lambda: mod_elm_prods())
-    save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+    m_e_prods_button = ttk.Button(mod_prods, text="PRODUCTOS", style="Custom.TButton",
+                             command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
+    m_e_prods_button.grid(row=1, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    m_e_prods_button = ttk.Button(mod_prods, text="SERVICIOS", style="Custom.TButton",
+                                  command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
+    m_e_prods_button.grid(row=2, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     exit_button = ttk.Button(mod_prods, text="SALIR", style="Custom.TButton",
                              command=lambda: close_tabs(menu, main_frame, mod_prods))
-    exit_button.grid(row=8, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+    exit_button.grid(row=3, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 def admin_menu():
     admin_form = tk.Tk()
