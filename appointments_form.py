@@ -76,8 +76,7 @@ def appointments_menu():
     ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=5)
     ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas_win.destroy).pack(fill="x", pady=5)
 
-    #columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
-    #tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
+
     for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
         tabla.heading(col, text=text)
         tabla.column(col, width=120)

@@ -100,3 +100,111 @@ def check_date(date):
         return  False
     else:
         return True
+
+
+#Modify Elimate---------------------------------------------------------------------------------------------------------
+def get_selected_item_data(treeview):
+    selected_item_id = treeview.focus()
+
+    if not selected_item_id:
+        messagebox.showwarning("Selección Requerida", "Por favor, selecciona un producto de la lista.")
+        return None, None
+
+    values = treeview.item(selected_item_id, 'values')
+
+    db_id = values[0] if values else None
+
+    return selected_item_id, db_id, values
+
+
+def edit_product(treeview):
+    item_id, db_id, values = get_selected_item_data(treeview)
+
+    if item_id:
+        # Aquí puedes abrir una nueva ventana con un formulario prellenado con 'values'
+        print(f"Editando producto ID: {db_id} con datos: {values}")
+        # Lógica para abrir ventana de edición...
+
+
+def delete_product(treeview):
+    item_id, db_id, values = get_selected_item_data(treeview)
+
+    if item_id:
+        if messagebox.askyesno("Confirmar Eliminación",
+                               f"¿Estás seguro de que quieres eliminar el producto ID {db_id}?"):
+            # Lógica para eliminar de la base de datos (usando db_id)
+            # ...
+
+            # Una vez eliminado de la DB, se elimina visualmente del Treeview
+            treeview.delete(item_id)
+            messagebox.showinfo("Éxito", "Producto eliminado.")
+
+def mod_elm_prods(menu, main_mod_m, m_e_p, style):
+    menu.select(m_e_p)
+    style.configure("Custom.TButton")
+    m_e_p.grid_columnconfigure(0, weight=1)
+    m_e_p.grid_columnconfigure(1, weight=0)
+
+    # --- TREEVIEW (Columna 0) ---
+    products_display = ttk.Treeview(m_e_p,
+                                    columns=("1", "2", "3", "4", "5", "6", "7", "8", "9"), show="headings")
+
+
+    products_display.grid(row=0, column=0, rowspan=10, padx=10, pady=10, sticky="nsew")
+
+
+    m_e_p.grid_rowconfigure(0, weight=1)
+
+
+    edit_button = ttk.Button(m_e_p, text="EDITAR", style="Custom.TButton",
+                             command=lambda: edit_product(products_display))  # <- Llama a la función
+    edit_button.grid(row=1, column=1, padx=10, pady=(10, 5), sticky="n")  # Sticky "n" para pegarse arriba
+
+
+    delete_button = ttk.Button(m_e_p, text="ELIMINAR", style="Custom.TButton",
+                               command=lambda: delete_product(products_display))
+    delete_button.grid(row=2, column=1, padx=10, pady=5, sticky="n")
+
+
+    exit_button = ttk.Button(m_e_p, text="SALIR", style="Custom.TButton",
+                             command=lambda: close_tabs(menu, main_mod_m, m_e_p))
+
+    exit_button.grid(row=10, column=1, padx=10, pady=(50, 10), sticky="s")
+
+    m_e_p.grid_rowconfigure(9, weight=1)
+
+
+def modify_eliminate(menu, main_frame, style):
+    #Tabs
+    mod_prods = ttk.Frame(menu)
+    mod_prods.pack(expand=True, fill="both")
+    menu.add(mod_prods, text="MODIFICAR/ELIMINAR", state="hidden")
+
+    prod_mod_e = ttk.Frame(menu)
+    prod_mod_e.pack(expand=True, fill="both")
+    menu.add(prod_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
+
+    svc_mod_e = ttk.Frame(menu)
+    svc_mod_e.pack(expand=True, fill="both")
+    menu.add(svc_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
+
+    #Menu selection----------------------------------------------------------------------
+    menu.select(mod_prods)
+    style.configure("Custom.TButton")
+
+    mod_prods.grid_columnconfigure(0, weight=0)
+    mod_prods.grid_columnconfigure(1, weight=1)
+
+    mod_prods.grid_rowconfigure(4, weight=1)
+
+    m_e_prods_button = ttk.Button(mod_prods, text="PRODUCTOS", style="Custom.TButton",
+                             command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
+    m_e_prods_button.grid(row=1, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    m_e_prods_button = ttk.Button(mod_prods, text="SERVICIOS", style="Custom.TButton",
+                                  command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
+    m_e_prods_button.grid(row=2, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+    exit_button = ttk.Button(mod_prods, text="SALIR", style="Custom.TButton",
+                             command=lambda: close_tabs(menu, main_frame, mod_prods))
+    exit_button.grid(row=3, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
