@@ -380,8 +380,9 @@ def add_service(menu, main_frame, new_service_frame, style):
     menu.select(new_service_frame)
 
 #Modify Elimate---------------------------------------------------------------------------------------------------------
-def mod_elm_prods():
-    pass
+def mod_elm_prods(menu, main_mod_m, m_e_p, style):
+    menu.select(m_e_p)
+    style.configure("Custom.TButton")
 
 def modify_eliminate(menu, main_frame, style):
     #Tabs
