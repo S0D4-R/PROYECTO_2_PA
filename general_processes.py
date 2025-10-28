@@ -126,7 +126,7 @@ def edit_product(treeview):
         # Lógica para abrir ventana de edición...
 
 
-def delete_product(treeview):
+def delete_product(treeview, query):
     item_id, db_id, values = get_selected_item_data(treeview)
 
     if item_id:
@@ -135,8 +135,7 @@ def delete_product(treeview):
             try:
                 con = get_conn()
                 cur = con.cursor()
-                cur.execute(
-                    "DELETE FROM barbershop_products WHERE id = %s;", (db_id))
+                cur.execute(query, (db_id,))
 
                 con.commit()
                 con.close()
@@ -146,6 +145,9 @@ def delete_product(treeview):
             treeview.delete(item_id)
             messagebox.showinfo("Éxito", "Producto eliminado.")
 
+
+
+#PRODUCTOS------------------------------------------------------------------------------------------------------------
 def mod_elm_prods(menu, main_mod_m, m_e_p, style):
     menu.select(m_e_p)
     style.configure("Custom.TButton")
@@ -184,7 +186,7 @@ def mod_elm_prods(menu, main_mod_m, m_e_p, style):
 
 
     delete_button = ttk.Button(m_e_p, text="ELIMINAR", style="Custom.TButton",
-                               command=lambda: delete_product(products_display))
+                               command=lambda: delete_product(products_display, "DELETE FROM barbershop_products WHERE id = %s;"))
     delete_button.grid(row=2, column=1, padx=10, pady=5, sticky="n")
 
 
@@ -223,10 +225,8 @@ def modify_eliminate(menu, main_frame, style):
                              command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
     m_e_prods_button.grid(row=1, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
-    m_e_prods_button = ttk.Button(mod_prods, text="SERVICIOS", style="Custom.TButton",
-                                  command=lambda: mod_elm_prods(menu, main_frame, prod_mod_e, style))
-    m_e_prods_button.grid(row=2, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
 
     exit_button = ttk.Button(mod_prods, text="SALIR", style="Custom.TButton",
                              command=lambda: close_tabs(menu, main_frame, mod_prods))
-    exit_button.grid(row=3, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+    exit_button.grid(row=2, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
