@@ -8,7 +8,7 @@ from pyuiWidgets.imageLabel import ImageLabel
 def sells_menu():
     sells_form = tk.Tk()
     sells_form.title("VENTAS")
-    sells_form.geometry("700x400")
+    sells_form.geometry("1000x700")
     sells_form.config(bg="#ffffff")
 
     style = ttk.Style()

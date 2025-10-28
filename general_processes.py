@@ -65,7 +65,7 @@ def init_db():
         cur.execute("""
                 CREATE TABLE IF NOT EXISTS b_clients (
                     id VARCHAR(10) PRIMARY KEY,
-                    c_nit VARCHAR(9) NOT NULL
+                    c_nit VARCHAR(9) NOT NULL,
                     client_name VARCHAR(100) NOT NULL,
                 );
         """)
