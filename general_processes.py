@@ -117,14 +117,6 @@ def get_selected_item_data(treeview):
     return selected_item_id, db_id, values
 
 
-def edit_product(treeview):
-    item_id, db_id, values = get_selected_item_data(treeview)
-
-    if item_id:
-        # Aquí puedes abrir una nueva ventana con un formulario prellenado con 'values'
-        print(f"Editando producto ID: {db_id} con datos: {values}")
-        # Lógica para abrir ventana de edición...
-
 
 def delete_product(treeview, query):
     item_id, db_id, values = get_selected_item_data(treeview)
@@ -180,9 +172,6 @@ def mod_elm_prods(menu, main_mod_m, m_e_p, style):
     m_e_p.grid_rowconfigure(0, weight=1)
 
 
-    edit_button = ttk.Button(m_e_p, text="EDITAR", style="Custom.TButton",
-                             command=lambda: edit_product(products_display))  # <- Llama a la función
-    edit_button.grid(row=1, column=1, padx=10, pady=(10, 5), sticky="n")  # Sticky "n" para pegarse arriba
 
 
     delete_button = ttk.Button(m_e_p, text="ELIMINAR", style="Custom.TButton",
@@ -207,10 +196,6 @@ def modify_eliminate(menu, main_frame, style):
     prod_mod_e = ttk.Frame(menu)
     prod_mod_e.pack(expand=True, fill="both")
     menu.add(prod_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
-
-    svc_mod_e = ttk.Frame(menu)
-    svc_mod_e.pack(expand=True, fill="both")
-    menu.add(svc_mod_e, text="PRODUCTOS MODIFICAR/ELIMINAR", state="hidden")
 
     #Menu selection----------------------------------------------------------------------
     menu.select(mod_prods)
