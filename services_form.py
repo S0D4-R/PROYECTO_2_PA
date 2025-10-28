@@ -5,6 +5,8 @@ from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
 from tkinter import ttk, messagebox
 from general_processes import get_conn
+from general_processes import id_creation
+from datetime import date
 
 def services_menu():
     win = tk.Toplevel()
@@ -24,24 +26,24 @@ def services_menu():
 
     def cargar_servicios():
         try:
-            connection = get_conn()
-            cursor = connection.cursor()
-            cursor.execute("SELECT name, price FROM b_services ORDER BY name ASC;")
-            servicios = cursor.fetchall()
-
-            win.servicios_dict = {nombre: precio for nombre, precio in servicios}
+            conn = get_conn()
+            cur = conn.cursor()
+            # 🔹 Cargamos el ID y el nombre del servicio
+            cur.execute("SELECT id, name, price FROM b_services ORDER BY name ASC;")
+            servicios = cur.fetchall()
+            win.servicios_dict = {nombre: (id_serv, precio) for id_serv, nombre, precio in servicios}
             combo_servicios["values"] = list(win.servicios_dict.keys())
-
         except Exception as e:
             messagebox.showerror("Error", f"No se pudieron cargar los servicios: {e}")
         finally:
-            if connection:
-                connection.close()
+            if conn:
+                conn.close()
 
     def mostrar_precio(event):
         nombre_servicio = combo_servicios.get()
         if nombre_servicio in win.servicios_dict:
-            precio_var.set(f"Q{win.servicios_dict[nombre_servicio]:.2f}")
+            precio = win.servicios_dict[nombre_servicio][1]
+            precio_var.set(f"Q{precio:.2f}")
 
     combo_servicios.bind("<<ComboboxSelected>>", mostrar_precio)
 
@@ -51,8 +53,37 @@ def services_menu():
             messagebox.showwarning("Atención", "Seleccione un servicio antes de cobrar.")
             return
 
-        precio = win.servicios_dict.get(nombre)
-        messagebox.showinfo("Cobro realizado", f"Servicio: {nombre}\nTotal a pagar: Q{precio:.2f}")
+        service_id, precio = win.servicios_dict[nombre]
+        venta_id = id_creation("V")
+        fecha = date.today()
+        cantidad = 1
+
+        try:
+            conn = get_conn()
+            cur = conn.cursor()
+
+            # 🔹 Insertamos los datos en la tabla barbershop_sales
+            cur.execute("""
+                        INSERT INTO barbershop_sales
+                        (id, sale_date, product_id, service_id, quantity, total_amount)
+                        VALUES (%s, %s, NULL, %s, %s, %s);
+                    """, (venta_id, fecha, service_id, cantidad, precio))
+
+            conn.commit()
+
+            messagebox.showinfo(
+                "Cobro realizado",
+                f"Venta registrada con éxito.\n\nCódigo de venta: {venta_id}\n"
+                f"Servicio: {nombre}\nTotal: Q{precio:.2f}"
+            )
+
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo registrar la venta: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    ttk.Button(win, text="Cobrar", command=cobrar_servicio).place(x=200, y=180)
 
     ttk.Button(win, text="Cobrar", command=cobrar_servicio).place(x=200, y=180)
 
