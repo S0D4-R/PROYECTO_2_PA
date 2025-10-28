@@ -66,7 +66,7 @@ def init_db():
                 CREATE TABLE IF NOT EXISTS b_clients (
                     id VARCHAR(10) PRIMARY KEY,
                     c_nit VARCHAR(9) NOT NULL,
-                    client_name VARCHAR(100) NOT NULL,
+                    client_name VARCHAR(100) NOT NULL
                 );
         """)
 
@@ -79,11 +79,8 @@ def init_db():
                     service_id VARCHAR(10) REFERENCES b_services(id),
                     sale_date DATE DEFAULT CURRENT_DATE,
                     quantity_sold INTEGER,
-                    service_price NUMERIC(10,2),
-                    CONSTRAINT check_product_or_service CHECK (
-                        (product_id IS NULL AND service_id IS NULL)
-                    )
-);
+                    service_price NUMERIC(10,2)
+                    );
         """)
 
         con.commit()
