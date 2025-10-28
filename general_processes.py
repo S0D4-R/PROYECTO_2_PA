@@ -58,13 +58,33 @@ def init_db():
         cur.execute("""
                 CREATE TABLE IF NOT EXISTS barbershop_sales (
                     id VARCHAR(10) PRIMARY KEY,
-                    sale_date DATE NOT NULL,
-                    product_id INTEGER REFERENCES barbershop_products(id),
-                    service_id VARCHAR(10) REFERENCES b_services(id),
-                    quantity INTEGER NOT NULL,
-                    total_amount NUMERIC(10,2) NOT NULL
+                    client_b VARCHAR(10) REFERENCES b_clients(id)
                 );
                 """)
+
+        cur.execute("""
+                CREATE TABLE IF NOT EXISTS b_clients (
+                    id VARCHAR(10) PRIMARY KEY,
+                    c_nit VARCHAR(9) NOT NULL
+                    client_name VARCHAR(100) NOT NULL,
+                );
+        """)
+
+        cur.execute(""" 
+                CREATE TABLE  IF NOT EXISTS sales_details (
+                    id SERIAL PRIMARY KEY,
+                    sale_id VARCHAR(10) REFERENCES barbershop_sales(id),
+                    client_id VARCHAR(10) REFERENCES b_clients(id),
+                    product_id INTEGER REFERENCES barbershop_products(id),
+                    service_id VARCHAR(10) REFERENCES b_services(id),
+                    sale_date DATE DEFAULT CURRENT_DATE,
+                    quantity_sold INTEGER,
+                    service_price NUMERIC(10,2),
+                    CONSTRAINT check_product_or_service CHECK (
+                        (product_id IS NULL AND service_id IS NULL)
+                    )
+);
+        """)
 
         con.commit()
         con.close()
@@ -85,6 +105,10 @@ def id_creation(typeP):
         return id_gen
     elif typeP == "V":
         return "VNT" + str(ran_code1) + str(ran_code2)
+    elif typeP == "C":
+        return "IDC" + str(ran_code1) + str(ran_code2)
+    elif typeP == "DV":
+        return "DTV" + str(ran_code1) + str(ran_code2)
     else:
         return None
 

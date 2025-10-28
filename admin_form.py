@@ -97,7 +97,7 @@ def gen_report(fdate, sdate, treeview):
             con = get_conn()
             cur = con.cursor()
             cur.execute(
-                "SELECT * FROM barbershop_sales WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
+                "SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
             sales_in_db = cur.fetchall()
 
             counter = 0
@@ -156,13 +156,7 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     # ---------------------------------------------------------------------
     # 3. CONFIGURACIÓN DE ESPACIO Y BOTONES
 
-    # Fila 3 debe absorber el espacio, NO la Fila 4 (que es donde suele ir el Treeview, ahora lo pusimos en la Fila 2)
-    # La Fila 3 es la fila VACÍA que empuja los botones hacia abajo.
     frame_reportes.grid_rowconfigure(3, weight=1)
-    # frame_reportes.grid_rowconfigure(4, weight=1) <--- ESTO ESTABA EMPUJANDO EL TREEVIEW
-
-    # Botones ahora empiezan en la Fila 4 (o 5, dependiendo de donde termine el formulario de fechas)
-    # Asegúrate de que el Treeview (Row 2) tenga un Row vacío debajo (Row 3) con weight=1.
 
     # BOTONES
     save_button = ttk.Button(frame_reportes, text="GENERAR", style="Custom.TButton",
