@@ -132,10 +132,17 @@ def delete_product(treeview):
     if item_id:
         if messagebox.askyesno("Confirmar Eliminación",
                                f"¿Estás seguro de que quieres eliminar el producto ID {db_id}?"):
-            # Lógica para eliminar de la base de datos (usando db_id)
-            # ...
+            try:
+                con = get_conn()
+                cur = con.cursor()
+                cur.execute(
+                    "DELETE FROM barbershop_products WHERE id = %s;", (db_id))
 
-            # Una vez eliminado de la DB, se elimina visualmente del Treeview
+                con.commit()
+                con.close()
+
+            except Exception as e:
+                messagebox.showerror("Error de BD", str(e))
             treeview.delete(item_id)
             messagebox.showinfo("Éxito", "Producto eliminado.")
 
@@ -149,6 +156,21 @@ def mod_elm_prods(menu, main_mod_m, m_e_p, style):
     products_display = ttk.Treeview(m_e_p,
                                     columns=("1", "2", "3", "4", "5", "6", "7", "8", "9"), show="headings")
 
+    try:
+        con = get_conn()
+        cur = con.cursor()
+        cur.execute(
+            "SELECT * FROM barbershop_products;")
+        products_in_db = cur.fetchall()
+
+
+        for product in products_in_db:
+            products_display.insert(parent="", index=tk.END, values=product)
+
+        con.close()
+
+    except Exception as e:
+        messagebox.showerror("Error de BD", str(e))
 
     products_display.grid(row=0, column=0, rowspan=10, padx=10, pady=10, sticky="nsew")
 
