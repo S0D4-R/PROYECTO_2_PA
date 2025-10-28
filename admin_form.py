@@ -379,7 +379,7 @@ def add_service(menu, main_frame, new_service_frame, style):
     menu.add(new_service_frame, text="AGREGAR PRODUCTOS")
     menu.select(new_service_frame)
 
-
+#
 #ADMIN MENU----------------------------------------------------------------------------------------------------
 def admin_menu():
     admin_form = tk.Tk()
