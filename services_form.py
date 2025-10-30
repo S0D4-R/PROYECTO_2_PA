@@ -4,8 +4,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
 from tkinter import ttk, messagebox
-from general_processes import get_conn
-from general_processes import id_creation
+from general_processes import *
 from datetime import date
 
 def services_menu():

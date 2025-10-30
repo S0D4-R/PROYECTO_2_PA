@@ -5,7 +5,7 @@ from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
 from tkinter import ttk, messagebox
 from datetime import date
-from general_processes import get_conn, id_creation
+from general_processes import *
 from tkinter import simpledialog
 import random
 import datetime
