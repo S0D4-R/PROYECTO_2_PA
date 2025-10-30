@@ -10,6 +10,7 @@ from products_form import *
 from sells_form import *
 from services_form import *
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 main = tk.Tk()
