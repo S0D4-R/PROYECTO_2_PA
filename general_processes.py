@@ -12,82 +12,145 @@ PG_CONFIG = {
 }
 
 #DB_CONN----------------------------------------------------------------------------------------------------------------
-def get_conn():
-    try:
-        return psycopg2.connect(**PG_CONFIG)
-    except Exception as e:
-        messagebox.showerror("DB ERROR", "Error in DB")
-def init_db():
-    try:
-        con = get_conn()
-        cur = con.cursor()
-        # Productos
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS barbershop_products (
-                id SERIAL PRIMARY KEY,
-                product_name VARCHAR(100) NOT NULL,
-                brand VARCHAR(50),
-                category VARCHAR(50),
-                price DECIMAL(10, 2) NOT NULL,
-                stock_quantity INTEGER NOT NULL,
-                supplier VARCHAR(100),
-                date_added DATE DEFAULT CURRENT_DATE,
-                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
+class DataBaseX():
+    def __init__(self):
+        self._get_conn()
+        self.__init_db()
+        self.__PGCONFIG = {
+                "host": "ep-spring-field-adn3pad6-pooler.c-2.us-east-1.aws.neon.tech",
+                "dbname": "neondb",
+                "user": "neondb_owner",
+                "password": "npg_oWvxAFjh8d0R",
+                "sslmode": "require"
+                }
 
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS b_services (
-                id VARCHAR(10) PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                price NUMERIC(10, 2) NOT NULL
-            );
-        """)
-
-        cur.execute("""
-                CREATE TABLE IF NOT EXISTS barbershop_appointments (
-                    id VARCHAR(10) PRIMARY KEY,
-                    client_name VARCHAR(100) NOT NULL,
-                    service_id VARCHAR(10) REFERENCES b_services(id),
-                    appointment_date DATE NOT NULL,
-                    appointment_time TIME NOT NULL,
-                    status VARCHAR(20) DEFAULT 'Scheduled'
-                );
-                """)
-
-        cur.execute("""
-                CREATE TABLE IF NOT EXISTS barbershop_sales (
-                    id VARCHAR(10) PRIMARY KEY,
-                    client_b VARCHAR(10) REFERENCES b_clients(id)
-                );
-                """)
-
-        cur.execute("""
-                CREATE TABLE IF NOT EXISTS b_clients (
-                    id VARCHAR(10) PRIMARY KEY,
-                    c_nit VARCHAR(9) NOT NULL,
-                    client_name VARCHAR(100) NOT NULL
-                );
-        """)
-
-        cur.execute(""" 
-                CREATE TABLE  IF NOT EXISTS sales_details (
+    def _get_conn(self):
+        try:
+            return psycopg2.connect(**self.__PGCONFIG)
+        except Exception as e:
+            messagebox.showerror("DB ERROR", "Error in DB")
+    def __init_db(self):
+        try:
+            con = self._get_conn()
+            cur = con.cursor()
+            # Productos
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS barbershop_products (
                     id SERIAL PRIMARY KEY,
-                    sale_id VARCHAR(10) REFERENCES barbershop_sales(id),
-                    client_id VARCHAR(10) REFERENCES b_clients(id),
-                    product_id INTEGER REFERENCES barbershop_products(id),
-                    service_id VARCHAR(10) REFERENCES b_services(id),
-                    sale_date DATE DEFAULT CURRENT_DATE,
-                    quantity_sold INTEGER,
-                    service_price NUMERIC(10,2)
+                    product_name VARCHAR(100) NOT NULL,
+                    brand VARCHAR(50),
+                    category VARCHAR(50),
+                    price DECIMAL(10, 2) NOT NULL,
+                    stock_quantity INTEGER NOT NULL,
+                    supplier VARCHAR(100),
+                    date_added DATE DEFAULT CURRENT_DATE,
+                    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS b_services (
+                    id VARCHAR(10) PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    price NUMERIC(10, 2) NOT NULL
+                );
+            """)
+
+            cur.execute("""
+                    CREATE TABLE IF NOT EXISTS barbershop_appointments (
+                        id VARCHAR(10) PRIMARY KEY,
+                        client_name VARCHAR(100) NOT NULL,
+                        service_id VARCHAR(10) REFERENCES b_services(id),
+                        appointment_date DATE NOT NULL,
+                        appointment_time TIME NOT NULL,
+                        status VARCHAR(20) DEFAULT 'Scheduled'
                     );
-        """)
+                    """)
 
-        con.commit()
-        con.close()
-    except Exception as e:
-        messagebox.showerror("Error de BD", f"No se pudo inicializar la BD:\n{e}")
+            cur.execute("""
+                    CREATE TABLE IF NOT EXISTS barbershop_sales (
+                        id VARCHAR(10) PRIMARY KEY,
+                        client_b VARCHAR(10) REFERENCES b_clients(id)
+                    );
+                    """)
 
+            cur.execute("""
+                    CREATE TABLE IF NOT EXISTS b_clients (
+                        id VARCHAR(10) PRIMARY KEY,
+                        c_nit VARCHAR(9) NOT NULL,
+                        client_name VARCHAR(100) NOT NULL
+                    );
+            """)
+
+            cur.execute(""" 
+                    CREATE TABLE  IF NOT EXISTS sales_details (
+                        id SERIAL PRIMARY KEY,
+                        sale_id VARCHAR(10) REFERENCES barbershop_sales(id),
+                        client_id VARCHAR(10) REFERENCES b_clients(id),
+                        product_id INTEGER REFERENCES barbershop_products(id),
+                        service_id VARCHAR(10) REFERENCES b_services(id),
+                        sale_date DATE DEFAULT CURRENT_DATE,
+                        quantity_sold INTEGER,
+                        service_price NUMERIC(10,2)
+                        );
+            """)
+
+            con.commit()
+            con.close()
+        except Exception as e:
+            messagebox.showerror("Error de BD", f"No se pudo inicializar la BD:\n{e}")
+
+    def displayDB(self, query, table):
+        try:
+            con = self._get_conn()
+            cur = con.cursor()
+            cur.execute(query)
+            products_in_db = cur.fetchall()
+
+            for product in products_in_db:
+                table.insert(parent="", index=tk.END, values=product)
+
+            con.close()
+
+        except Exception as e:
+            messagebox.showerror("Error de BD", str(e))
+
+    def execute(self, query, parameters):
+        try:
+            con = self._get_conn()
+            cur = con.cursor()
+            cur.execute(query, parameters)
+
+            con.commit()
+            con.close()
+
+        except Exception as e:
+            messagebox.showerror("Error de BD", str(e))
+
+class DataBase_For_Reports(DataBaseX):
+    def reports(self,query, parameter, table):
+        sales_total = 0
+        try:
+            con = self._get_conn()
+            cur = con.cursor()
+            cur.execute(query, parameter)
+            sales_in_db = cur.fetchall()
+
+            counter = 0
+            for sale in sales_in_db:
+                counter += 1
+                sales_total += sale[5]
+                table.insert(parent="", index=tk.END, values=(sale[0], sale[1], sale[2], sale[3], sale[5]))
+            con.close()
+        except Exception as e:
+            messagebox.showerror("Error de BD", str(e))
+        table.insert(parent="", index=tk.END, values=(" ", " ", " ", "TOTAL: ", sales_total))
+
+
+
+
+
+gen_db_x = DataBase_For_Reports()
 
 #AUTOGENERADOR_ID's-----------------------------------------------------------------------------------------------------
 def id_creation(typeP):
@@ -145,16 +208,7 @@ def delete_product(treeview, query):
     if item_id:
         if messagebox.askyesno("Confirmar Eliminación",
                                f"¿Estás seguro de que quieres eliminar el producto ID {db_id}?"):
-            try:
-                con = get_conn()
-                cur = con.cursor()
-                cur.execute(query, (db_id,))
-
-                con.commit()
-                con.close()
-
-            except Exception as e:
-                messagebox.showerror("Error de BD", str(e))
+            gen_db_x.execute(query, (db_id,))
             treeview.delete(item_id)
             messagebox.showinfo("Éxito", "Producto eliminado.")
 
@@ -171,21 +225,7 @@ def mod_elm_prods(menu, main_mod_m, m_e_p, style):
     products_display = ttk.Treeview(m_e_p,
                                     columns=("1", "2", "3", "4", "5", "6", "7", "8", "9"), show="headings")
 
-    try:
-        con = get_conn()
-        cur = con.cursor()
-        cur.execute(
-            "SELECT * FROM barbershop_products;")
-        products_in_db = cur.fetchall()
-
-
-        for product in products_in_db:
-            products_display.insert(parent="", index=tk.END, values=product)
-
-        con.close()
-
-    except Exception as e:
-        messagebox.showerror("Error de BD", str(e))
+    gen_db_x.displayDB("SELECT * FROM barbershop_products;", products_display)
 
     products_display.grid(row=0, column=0, rowspan=10, padx=10, pady=10, sticky="nsew")
 

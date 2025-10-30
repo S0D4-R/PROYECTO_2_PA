@@ -2,8 +2,8 @@ import os
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from general_processes import get_conn
-from general_processes import id_creation
+from general_processes import *
+
 
 
 def appointments_menu():

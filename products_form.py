@@ -6,9 +6,6 @@ from admin_form import *
 from general_processes import *
 from pyuiWidgets.imageLabel import ImageLabel
 
-get_conn()
-init_db()
-
 def products_menu():
     products_form = tk.Tk()
     products_form.title("PRODUCTOS")
@@ -67,23 +64,7 @@ def products_menu():
     main_table.pack(expand=True, fill='both')
 
     # Mostrar productos
-    try:
-        con = get_conn()
-        cur = con.cursor()
-        cur.execute(
-            "SELECT id, product_name, brand, category, price, stock_quantity, supplier, date_added, last_updated FROM barbershop_products;")
-        products_in_db = cur.fetchall()
-
-
-        for product in products_in_db:
-            main_table.insert(parent="", index=tk.END, values=product)
-
-        con.close()
-
-    except Exception as e:
-        messagebox.showerror("Error de BD", str(e))
-
-
+    gen_db_x.displayDB("SELECT id, product_name, brand, category, price, stock_quantity, supplier, date_added, last_updated FROM barbershop_products;", main_table)
 
     boton_salir = ttk.Button(
         master=products_form,
