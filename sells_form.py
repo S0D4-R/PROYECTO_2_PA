@@ -170,19 +170,16 @@ def sells_menu():
                     tipo, item_id, nombre, precio, cantidad, subtotal = item
 
 
-                    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
-                    detail_id = f"DV{timestamp}{idx}"
-
                     if tipo == "P":
                         cur.execute("""
-                            INSERT INTO sales_details (id, sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                        """, (detail_id, sale_id, client_id, item_id, None, fecha, cantidad, precio))
+                            INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        """, (sale_id, client_id, item_id, None, fecha, cantidad, precio))
                     else:
                         cur.execute("""
-                            INSERT INTO sales_details (id, sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                        """, (detail_id, sale_id, client_id, None, item_id, fecha, 1, precio))
+                            INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        """, (sale_id, client_id, None, item_id, fecha, 1, precio))
 
                 con.commit()
                 con.close()
