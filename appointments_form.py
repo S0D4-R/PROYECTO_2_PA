@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from general_processes import *
 
-
+appointment_db = Appointments_DB()
 
 def appointments_menu():
     citas_win = tk.Toplevel()
@@ -35,14 +35,8 @@ def appointments_menu():
     entry_nombre.grid(row=1, column=1, padx=10, pady=5)
 
     try:
-        con = get_conn()
-        cur = con.cursor()
-        cur.execute("SELECT id, name, price FROM b_services;")
-        servicios = cur.fetchall()
-        con.close()
-
+        servicios = appointment_db.iterable_db("SELECT id, name, price FROM b_services;")
         valores_servicio = [f"{s[0]} - {s[1]}" for s in servicios]
-
     except Exception as e:
         valores_servicio = []
         messagebox.showerror("Error de BD", f"No se pudieron cargar los servicios:\n{e}")
@@ -85,12 +79,7 @@ def appointments_menu():
     def cargar_citas():
         tabla.delete(*tabla.get_children())
         try:
-            con = get_conn()
-            cur = con.cursor()
-            cur.execute("SELECT * FROM barbershop_appointments ORDER BY appointment_date;")
-            for row in cur.fetchall():
-                tabla.insert("", tk.END, values=row)
-            con.close()
+            gen_db_x.displayDB("SELECT * FROM barbershop_appointments ORDER BY appointment_date;", tabla)
         except Exception as e:
             messagebox.showerror("Error", f"No se pudieron cargar las citas:\n{e}")
 
@@ -108,15 +97,10 @@ def appointments_menu():
         try:
             # Extraer el ID del servicio antes del guion
             servicio_id = servicio.split(" - ")[0]
-
-            con = get_conn()
-            cur = con.cursor()
-            cur.execute("""
+            gen_db_x.execute("""
                 INSERT INTO barbershop_appointments (id, client_name, service_id, appointment_date, appointment_time)
                 VALUES (%s, %s, %s, %s, %s);
             """, (id_cita, nombre, servicio_id, fecha, hora))
-            con.commit()
-            con.close()
 
             messagebox.showinfo("Éxito", "Cita registrada correctamente.")
             cargar_citas()
@@ -137,11 +121,7 @@ def appointments_menu():
         item = tabla.item(seleccion[0])
         id_cita = item["values"][0]
         try:
-            con = get_conn()
-            cur = con.cursor()
-            cur.execute("DELETE FROM barbershop_appointments WHERE id = %s;", (id_cita,))
-            con.commit()
-            con.close()
+            gen_db_x.execute("DELETE FROM barbershop_appointments WHERE id = %s;", (id_cita,))
             messagebox.showinfo("Éxito", "Cita eliminada correctamente.")
             cargar_citas()
         except Exception as e:
@@ -157,11 +137,7 @@ def appointments_menu():
         nuevo_estado = messagebox.askquestion("Editar estado", "¿Marcar cita como completada?")
         if nuevo_estado == "si":
             try:
-                con = get_conn()
-                cur = con.cursor()
-                cur.execute("UPDATE barbershop_appointments SET status = 'Completada' WHERE id = %s;", (id_cita,))
-                con.commit()
-                con.close()
+                gen_db_x.execute("UPDATE barbershop_appointments SET status = 'Completada' WHERE id = %s;", (id_cita,))
                 cargar_citas()
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo editar la cita:\n{e}")

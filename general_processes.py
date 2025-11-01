@@ -146,8 +146,30 @@ class DataBase_For_Reports(DataBaseX):
             messagebox.showerror("Error de BD", str(e))
         table.insert(parent="", index=tk.END, values=(" ", " ", " ", "TOTAL: ", sales_total))
 
+class DataBase_For_Services(DataBaseX):
+    def cargar_servicios(self, window, combobox):
+        try:
+            conn = self._get_conn()
+            cur = conn.cursor()
+            cur.execute("SELECT id, name, price FROM b_services ORDER BY name ASC;")
+            servicios = cur.fetchall()
+            window.servicios_dict = {nombre: (id_serv, precio) for id_serv, nombre, precio in servicios}
+            combobox["values"] = list(window.servicios_dict.keys())
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudieron cargar los servicios: {e}")
+        finally:
+            if conn:
+                conn.close()
 
 
+class Appointments_DB(DataBaseX):
+    def iterable_db(self, query):
+        con = self._get_conn()
+        cur = con.cursor()
+        cur.execute(query)
+        new_list = cur.fetchall()
+        con.close()
+        return new_list
 
 
 gen_db_x = DataBase_For_Reports()
