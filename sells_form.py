@@ -13,7 +13,6 @@ import datetime
 
 def sells_menu():
     def obtener_client_info():
-        """Solicita NIT y nombre del cliente antes de abrir la ventana de ventas"""
         client_win = tk.Toplevel()
         client_win.title("Datos del Cliente")
         client_win.geometry("400x250")

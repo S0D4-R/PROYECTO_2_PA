@@ -8,7 +8,7 @@ from general_processes import *
 from datetime import date
 
 
-svc_db = DataBase_For_Services
+svc_db = DataBase_For_Services()
 def services_menu():
     win = tk.Toplevel()
     win.title("Servicios - Cobro")
