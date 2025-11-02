@@ -5,15 +5,69 @@ from tkinter import ttk
 from pyuiWidgets.imageLabel import ImageLabel
 from tkinter import ttk, messagebox
 from datetime import date
-from general_processes import get_conn, id_creation
+from general_processes import *
+from appointments_form import appointment_db
 from tkinter import simpledialog
 import random
 import datetime
 
+class DataBase_Sells(DataBaseX):
+    def c_in_c(self, nit, name):
+        con = self._get_conn()
+        cur = con.cursor()
+        client_id = id_creation("C")
+        if nit == "":
+            nit = "CF"
+            cur.execute(
+                "INSERT INTO b_clients (id, c_nit, client_name) VALUES (%s, %s, %s)",
+                (client_id, nit, name)
+            )
+            con.commit()
+        else:
+            cur.execute("SELECT id FROM b_clients WHERE c_nit = %s", (nit,))
+            cliente_existente = cur.fetchone()
+            if cliente_existente:
+                client_id = cliente_existente[0]
+            else:
+                client_id = id_creation("C")
+                cur.execute(
+                    "INSERT INTO b_clients (id, c_nit, client_name) VALUES (%s, %s, %s)",
+                    (client_id, nit, name)
+                )
+                con.commit()
+
+        con.close()
+        return client_id
+
+    def cobro(self, carrito, sale_id, client_id, fecha, total):
+        con = self._get_conn()
+        cur = con.cursor()
+
+        cur.execute("INSERT INTO barbershop_sales (id, client_b) VALUES (%s, %s)", (sale_id, client_id))
+
+        for idx, item in enumerate(carrito):
+            tipo, item_id, nombre, precio, cantidad, subtotal = item
+
+            if tipo == "P":
+                cur.execute("""
+                                    INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                """, (sale_id, client_id, item_id, None, fecha, cantidad, precio))
+            else:
+                cur.execute("""
+                                    INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                """, (sale_id, client_id, None, item_id, fecha, 1, precio))
+
+        con.commit()
+        con.close()
+        messagebox.showinfo("Éxito", f"Venta registrada exitosamente.\nTotal: Q{total:.2f}")
+
+
+sales_db = DataBase_Sells()
 
 def sells_menu():
     def obtener_client_info():
-        """Solicita NIT y nombre del cliente antes de abrir la ventana de ventas"""
         client_win = tk.Toplevel()
         client_win.title("Datos del Cliente")
         client_win.geometry("400x250")
@@ -36,31 +90,7 @@ def sells_menu():
                 return
 
             try:
-                con = get_conn()
-                cur = con.cursor()
-
-                if nit == "":
-                    nit = "CF"
-                    client_id = id_creation("C")
-                    cur.execute(
-                        "INSERT INTO b_clients (id, c_nit, client_name) VALUES (%s, %s, %s)",
-                        (client_id, nit, nombre)
-                    )
-                    con.commit()
-                else:
-                    cur.execute("SELECT id FROM b_clients WHERE c_nit = %s", (nit,))
-                    cliente_existente = cur.fetchone()
-                    if cliente_existente:
-                        client_id = cliente_existente[0]
-                    else:
-                        client_id = id_creation("C")
-                        cur.execute(
-                            "INSERT INTO b_clients (id, c_nit, client_name) VALUES (%s, %s, %s)",
-                            (client_id, nit, nombre)
-                        )
-                        con.commit()
-
-                con.close()
+                client_id = sales_db.c_in_c(nit, nombre)
                 client_win.destroy()
                 abrir_ventana_ventas(client_id, nombre)
 
@@ -78,16 +108,9 @@ def sells_menu():
 
         tk.Label(ventas_win, text=f"Cliente: {client_name}", bg="#ffffff", font=("Arial", 12, "bold")).pack(pady=10)
 
+        productos = appointment_db.iterable_db("SELECT id, product_name, price FROM barbershop_products")
 
-        con = get_conn()
-        cur = con.cursor()
-        cur.execute("SELECT id, product_name, price FROM barbershop_products")
-        productos = cur.fetchall()
-
-        cur.execute("SELECT id, name, price FROM b_services")
-        servicios = cur.fetchall()
-        con.close()
-
+        servicios = appointment_db.iterable_db("SELECT id, name, price FROM b_services")
 
         tipo_var = tk.StringVar()
         tipo_combo = ttk.Combobox(ventas_win, textvariable=tipo_var, values=["Producto", "Servicio"], state="readonly")
@@ -159,33 +182,8 @@ def sells_menu():
             fecha = datetime.date.today()
 
             try:
-                con = get_conn()
-                cur = con.cursor()
-
-
-                cur.execute("INSERT INTO barbershop_sales (id, client_b) VALUES (%s, %s)", (sale_id, client_id))
-
-
-                for idx, item in enumerate(carrito):
-                    tipo, item_id, nombre, precio, cantidad, subtotal = item
-
-
-                    if tipo == "P":
-                        cur.execute("""
-                            INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        """, (sale_id, client_id, item_id, None, fecha, cantidad, precio))
-                    else:
-                        cur.execute("""
-                            INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        """, (sale_id, client_id, None, item_id, fecha, 1, precio))
-
-                con.commit()
-                con.close()
-                messagebox.showinfo("Éxito", f"Venta registrada exitosamente.\nTotal: Q{total:.2f}")
+                sales_db.cobro(carrito, sale_id, client_id, fecha, total)
                 ventas_win.destroy()
-
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo registrar la venta:\n{e}")
 

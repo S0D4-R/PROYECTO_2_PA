@@ -4,22 +4,20 @@ from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from general_processes import get_conn
 from general_processes import id_creation
-from POO import Cita
-from datetime import datetime
 
 
 def appointments_menu():
-    citas = tk.Toplevel()
-    citas.title("Gestión de Citas")
-    citas.geometry("900x500")
-    citas.config(bg="#ffffff")
+    citas_win = tk.Toplevel()
+    citas_win.title("Gestión de Citas")
+    citas_win.geometry("900x500")
+    citas_win.config(bg="#ffffff")
 
     columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")
-    tabla = ttk.Treeview(citas, columns=columns, show="headings")
+    tabla = ttk.Treeview(citas_win, columns=columns, show="headings")
 
-    ttk.Label(citas, text="GESTIÓN DE CITAS", background="#ffffff", font=("Arial", 14, "bold")).pack(pady=20)
+    ttk.Label(citas_win, text="GESTION DE CITAS", background="#ffffff").pack(pady=20)
 
-    contenedor = ttk.Frame(citas)
+    contenedor = ttk.Frame(citas_win)
     contenedor.pack(pady=10)
 
     frame_form = ttk.Frame(contenedor)
@@ -49,12 +47,16 @@ def appointments_menu():
         valores_servicio = []
         messagebox.showerror("Error de BD", f"No se pudieron cargar los servicios:\n{e}")
 
-    ttk.Label(frame_form, text="Servicio:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
-    combo_servicio = ttk.Combobox(frame_form, width=40, values=valores_servicio, state="readonly")
+    combo_servicio = ttk.Combobox(
+        frame_form,
+        width=25,
+        values=valores_servicio,
+        state="readonly"
+    )
     combo_servicio.grid(row=2, column=1, padx=10, pady=5)
     combo_servicio.set("Seleccione un servicio")
 
-    ttk.Label(frame_form, text="Fecha (DD-MM-AAAA):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    ttk.Label(frame_form, text="Fecha (AAAA-MM-DD):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
     entry_fecha = ttk.Entry(frame_form, width=25)
     entry_fecha.grid(row=3, column=1, padx=10, pady=5)
 
@@ -72,7 +74,8 @@ def appointments_menu():
     ttk.Button(frame_botones, text="Editar", style="Accion.TButton", command=lambda: editar_cita()).pack(fill="x", pady=5)
     ttk.Button(frame_botones, text="Eliminar", style="Accion.TButton", command=lambda: eliminar_cita()).pack(fill="x", pady=5)
     ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=5)
-    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas.destroy).pack(fill="x", pady=5)
+    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas_win.destroy).pack(fill="x", pady=5)
+
 
     for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
         tabla.heading(col, text=text)
@@ -93,28 +96,25 @@ def appointments_menu():
 
     def agregar_cita():
         id_cita = entry_id.get()
-        name = entry_nombre.get()
+        nombre = entry_nombre.get()
         servicio = combo_servicio.get()
-        fecha_input = entry_fecha.get()
+        fecha = entry_fecha.get()
         hora = entry_hora.get()
 
-        if not id_cita or not name or not servicio or not fecha_input or not hora:
+        if not id_cita or not nombre or not servicio or not fecha or not hora:
             messagebox.showwarning("Campos incompletos", "Todos los campos son obligatorios.")
             return
 
         try:
-            fecha1 = datetime.strptime(fecha_input, "%d-%m-%Y")
-            fecha = fecha1.strftime("%Y-%m-%d")
+            # Extraer el ID del servicio antes del guion
             servicio_id = servicio.split(" - ")[0]
-
-            nueva_cita = Cita(name,fecha,hora)
 
             con = get_conn()
             cur = con.cursor()
             cur.execute("""
                 INSERT INTO barbershop_appointments (id, client_name, service_id, appointment_date, appointment_time)
                 VALUES (%s, %s, %s, %s, %s);
-            """, (id_cita, name, servicio_id, fecha, hora))
+            """, (id_cita, nombre, servicio_id, fecha, hora))
             con.commit()
             con.close()
 
@@ -125,9 +125,6 @@ def appointments_menu():
             entry_id.delete(0, tk.END)
             entry_id.insert(0, id_creation("A"))
             entry_id.config(state="readonly")
-
-        except ValueError:
-            messagebox.showerror("Formato incorrecto", "La fecha tiene que ser formato DD-MM-AAAA")
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo registrar la cita:\n{e}")
