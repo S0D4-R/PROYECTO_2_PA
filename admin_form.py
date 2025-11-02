@@ -1,7 +1,6 @@
 import os
 import tkinter as tk
 from tkinter.messagebox import showerror
-
 from PIL import Image, ImageTk
 from tkinter import ttk
 from tkinter import messagebox
@@ -11,6 +10,7 @@ import  psycopg2
 from general_processes import *
 from tkcalendar import DateEntry
 import datetime
+
 PASSWORD_FILE = "password.json"
 DEFAULT_PASSWORD = "123"
 
@@ -92,23 +92,7 @@ def login():
 
 def gen_report(fdate, sdate, treeview):
     if check_date(fdate.get()) and check_date(sdate.get()):
-        sales_total = 0
-        try:
-            con = get_conn()
-            cur = con.cursor()
-            cur.execute(
-                "SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
-            sales_in_db = cur.fetchall()
-
-            counter = 0
-            for sale in sales_in_db:
-                counter += 1
-                sales_total += sale[5]
-                treeview.insert(parent="", index=tk.END, values=(sale[0], sale[1], sale[2], sale[3], sale[5]))
-            con.close()
-        except Exception as e:
-            messagebox.showerror("Error de BD", str(e))
-        treeview.insert(parent="", index=tk.END, values=(" ", " ", " ", "TOTAL: ", sales_total))
+        gen_db_x.reports("SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()), treeview)
     else:
         messagebox.showerror("ERROR", "Fecha inválida")
 
@@ -136,8 +120,8 @@ def reportes(menu, main_frame, frame_reportes, style, form):
 
 
     #Tabla de labels
-    report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6"), show="headings")
-    column_map = {"1": "ID", "2": "Fecha", "3": "Producto", "4": "Servicio", "5": "Total"}
+    report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6", "7", "8"), show="headings")
+    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio", "6": "Fecha", "7": "Cantidad", "8": "Precio"}
     for col_id, text in column_map.items():
         report_table.heading(col_id, text=text, anchor=tk.CENTER)
 
@@ -147,6 +131,9 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     report_table.column("3", width=120, anchor=tk.W)
     report_table.column("4", width=120, anchor=tk.W)
     report_table.column("5", width=60, anchor=tk.E)
+    report_table.column("6", width=60, anchor=tk.E)
+    report_table.column("7", width=60, anchor=tk.E)
+    report_table.column("8", width=60, anchor=tk.E)
 
 
     # ¡Añadir el Treeview al grid! Ocupará ambas columnas y se estirará horizontalmente.
@@ -175,7 +162,6 @@ def reportes(menu, main_frame, frame_reportes, style, form):
 
 #New Prod--------------------------------------------------------------------------------------------------------
 def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
-    connection = get_conn()
     try:
         prod_name = name_e.get()
         prod_brand = brand_e.get()
@@ -184,27 +170,20 @@ def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
         prod_stock = int(stock_e.get())
         prod_supplier = supp_e.get()
 
-        with connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """
-                INSERT INTO barbershop_products 
-                (product_name, brand, category, price, stock_quantity, supplier) 
-                VALUES (%s, %s, %s, %s, %s, %s); 
-                """,
-                (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier)
-            )
-
-        connection.commit()
+        gen_db_x.execute("""
+                        INSERT INTO barbershop_products 
+                        (product_name, brand, category, price, stock_quantity, supplier) 
+                        VALUES (%s, %s, %s, %s, %s, %s); 
+                        """, (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier)
+                         )
         messagebox.showinfo("ÉXITO", f"Producto '{prod_name}' guardado con éxito.")
+
 
     except ValueError:
         messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
     except Exception as e:
-        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
-    finally:
-        if connection:
-            connection.close()
+        messagebox.showerror("ERROR AL AGREGAR PRODUCTOS", f"Error en la base de datos: {e}")
+
 
 def agregar_producto(menu,main_frame,  frame_add_prods, style):
     menu.select(frame_add_prods)
@@ -306,34 +285,23 @@ def change_pass(menu, main_frame, password_frame, style):
 
 #ADD SERVICES-----------------------------------------------------------------------------------------------------------
 def add_svc(svcname_e, svcprice_e):
-    connection = get_conn()
     try:
         svc_name = svcname_e.get()
         svc_price = float(svcprice_e.get())
         svc_id = id_creation("S")
 
-
-        with connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """
+        gen_db_x.execute("""
                 INSERT INTO b_services 
                 (id, name, price) 
                 VALUES (%s, %s, %s); 
-                """,
-                (svc_id, svc_name, svc_price)
-            )
-
-        connection.commit()
+                """,(svc_id, svc_name, svc_price))
         messagebox.showinfo("ÉXITO", f"El servicio '{svc_name}' guardado con éxito.")
 
     except ValueError:
         messagebox.showerror("ERROR DE DATOS", "El Precio debe ser un número válido.")
     except Exception as e:
-        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
-    finally:
-        if connection:
-            connection.close()
+        messagebox.showerror("ERROR AL AGREGAR SERVICIOS", f"Error en la base de datos: {e}")
+
 
 
 
