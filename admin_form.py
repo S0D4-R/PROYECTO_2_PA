@@ -92,7 +92,7 @@ def login():
 
 def gen_report(fdate, sdate, treeview):
     if check_date(fdate.get()) and check_date(sdate.get()):
-        gen_db_x.reports("SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()))
+        gen_db_x.reports("SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()), treeview)
     else:
         messagebox.showerror("ERROR", "Fecha inválida")
 
@@ -120,8 +120,8 @@ def reportes(menu, main_frame, frame_reportes, style, form):
 
 
     #Tabla de labels
-    report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6"), show="headings")
-    column_map = {"1": "ID", "2": "Fecha", "3": "Producto", "4": "Servicio", "5": "Total"}
+    report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6", "7", "8"), show="headings")
+    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio", "6": "Fecha", "7": "Cantidad", "8": "Precio"}
     for col_id, text in column_map.items():
         report_table.heading(col_id, text=text, anchor=tk.CENTER)
 
@@ -131,6 +131,9 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     report_table.column("3", width=120, anchor=tk.W)
     report_table.column("4", width=120, anchor=tk.W)
     report_table.column("5", width=60, anchor=tk.E)
+    report_table.column("6", width=60, anchor=tk.E)
+    report_table.column("7", width=60, anchor=tk.E)
+    report_table.column("8", width=60, anchor=tk.E)
 
 
     # ¡Añadir el Treeview al grid! Ocupará ambas columnas y se estirará horizontalmente.
@@ -179,7 +182,7 @@ def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
     except ValueError:
         messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
     except Exception as e:
-        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
+        messagebox.showerror("ERROR AL AGREGAR PRODUCTOS", f"Error en la base de datos: {e}")
 
 
 def agregar_producto(menu,main_frame,  frame_add_prods, style):
@@ -297,7 +300,7 @@ def add_svc(svcname_e, svcprice_e):
     except ValueError:
         messagebox.showerror("ERROR DE DATOS", "El Precio debe ser un número válido.")
     except Exception as e:
-        messagebox.showerror("ERROR", f"Error en la base de datos: {e}")
+        messagebox.showerror("ERROR AL AGREGAR SERVICIOS", f"Error en la base de datos: {e}")
 
 
 

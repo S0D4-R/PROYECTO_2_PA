@@ -2,15 +2,6 @@ from admin_form import  *
 from tkinter import messagebox
 import random
 
-
-PG_CONFIG = {
-    "host": "ep-spring-field-adn3pad6-pooler.c-2.us-east-1.aws.neon.tech",
-    "dbname": "neondb",
-    "user": "neondb_owner",
-    "password": "npg_oWvxAFjh8d0R",
-    "sslmode": "require"
-}
-
 #DB_CONN----------------------------------------------------------------------------------------------------------------
 class DataBaseX():
     def __init__(self):
@@ -28,10 +19,13 @@ class DataBaseX():
         try:
             return psycopg2.connect(**self.__PGCONFIG)
         except Exception as e:
-            messagebox.showerror("DB ERROR", "Error in DB")
+            #messagebox.showerror("DB ERROR", "Error al conectar a la BD")
+            return None
     def __init_db(self):
         try:
             con = self._get_conn()
+            if con is None:
+                return
             cur = con.cursor()
             # Productos
             cur.execute("""
@@ -113,7 +107,7 @@ class DataBaseX():
             con.close()
 
         except Exception as e:
-            messagebox.showerror("Error de BD", str(e))
+            messagebox.showerror("Error al desplegar la BD", str(e))
 
     def execute(self, query, parameters):
         try:
@@ -125,7 +119,7 @@ class DataBaseX():
             con.close()
 
         except Exception as e:
-            messagebox.showerror("Error de BD", str(e))
+            messagebox.showerror("Error al ejecutar comando", str(e))
 
 class DataBase_For_Reports(DataBaseX):
     def reports(self,query, parameter, table):
@@ -138,13 +132,16 @@ class DataBase_For_Reports(DataBaseX):
 
             counter = 0
             for sale in sales_in_db:
+                quantity = sale[6]
+                unit_price = sale[7]
+                subtotal = quantity * unit_price
                 counter += 1
-                sales_total += sale[5]
-                table.insert(parent="", index=tk.END, values=(sale[0], sale[1], sale[2], sale[3], sale[5]))
+                sales_total += subtotal
+                table.insert(parent="", index=tk.END, values=(sale[0], sale[1], sale[2], sale[3], sale[4], sale[5], sale[6], sale[7]))
             con.close()
         except Exception as e:
-            messagebox.showerror("Error de BD", str(e))
-        table.insert(parent="", index=tk.END, values=(" ", " ", " ", "TOTAL: ", sales_total))
+            messagebox.showerror("Error al generar reporte", str(e))
+        table.insert(parent="", index=tk.END, values=(" ", " ", " ", " ", " ", " ", "TOTAL: ", f"Q{sales_total:.2f}"))
 
 class DataBase_For_Services(DataBaseX):
     def cargar_servicios(self, window, combobox):
@@ -155,11 +152,11 @@ class DataBase_For_Services(DataBaseX):
             servicios = cur.fetchall()
             window.servicios_dict = {nombre: (id_serv, precio) for id_serv, nombre, precio in servicios}
             combobox["values"] = list(window.servicios_dict.keys())
+            conn.close()
         except Exception as e:
-            messagebox.showerror("Error", f"No se pudieron cargar los servicios: {e}")
-        finally:
-            if conn:
-                conn.close()
+            messagebox.showerror("Error de servicios", f"No se pudieron cargar los servicios: {e}")
+
+
 
 
 class Appointments_DB(DataBaseX):
