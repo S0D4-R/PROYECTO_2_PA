@@ -414,12 +414,12 @@ def admin_menu():
                                  style="Custom.TButton",
                                  command=lambda: add_service(inside_menu,frame_menu_inicial,frame_add_svc,admin_style))
     button_add_service.grid(row=1, column=0, padx=250, pady=10, sticky="ew")
-
-    button_add_service = ttk.Button(frame_menu_inicial, text="MODIFICAR/ELIMINAR REGISTROS",
+    """ 
+    button_mod_elm = ttk.Button(frame_menu_inicial, text="MODIFICAR/ELIMINAR REGISTROS",
                                     style="Custom.TButton",
                                     command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style))
-    button_add_service.grid(row=4, column=0, padx=250, pady=10, sticky="ew")
-
+    button_mod_elm.grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+    """
 
 # Botones--------------------------------------------------------------------------------------------------------
     admin_style.configure("label.TLabel", background="#E4E2E2", foreground="#000", anchor="center")
