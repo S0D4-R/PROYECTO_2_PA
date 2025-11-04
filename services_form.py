@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import ttk, messagebox
-from general_processes import gen_db_x  # usamos tu conexión existente
+from general_processes import gen_db_x
 
 def services_menu():
     servicios = tk.Toplevel()
@@ -10,12 +10,7 @@ def services_menu():
     servicios.config(bg="#ffffff")
 
 
-    tk.Label(
-        servicios,
-        text="Lista de Servicios Disponibles",
-        bg="#ffffff",
-        font=("Arial", 14, "bold")
-    ).pack(pady=15)
+    tk.Label(servicios, text="Lista de Servicios Disponibles", bg="#ffffff", font=("Arial", 14, "bold")).pack(pady=15)
 
     columnas = ("ID", "Servicio", "Precio")
     tabla = ttk.Treeview(servicios, columns=columnas, show="headings", height=12)
