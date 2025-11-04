@@ -1,66 +1,56 @@
 import os
 import tkinter as tk
-from PIL import Image, ImageTk
-from tkinter import ttk
-from pyuiWidgets.imageLabel import ImageLabel
 from tkinter import ttk, messagebox
-from general_processes import *
-from datetime import date
+from general_processes import gen_db_x  # usamos tu conexión existente
 
-
-svc_db = DataBase_For_Services()
 def services_menu():
-    win = tk.Toplevel()
-    win.title("Servicios - Cobro")
-    win.geometry("500x300")
-    win.config(bg="#ffffff")
-
-    tk.Label(win, text="Seleccionar Servicio:", bg="#ffffff", font=("Arial", 12)).place(x=50, y=50)
-    tk.Label(win, text="Precio:", bg="#ffffff", font=("Arial", 12)).place(x=50, y=120)
-
-    combo_servicios = ttk.Combobox(win, width=30, state="readonly")
-    combo_servicios.place(x=220, y=50)
-
-    precio_var = tk.StringVar()
-    entry_precio = tk.Entry(win, textvariable=precio_var, state="readonly", width=15, justify="center")
-    entry_precio.place(x=220, y=120)
+    servicios = tk.Toplevel()
+    servicios.title("Servicios disponibles")
+    servicios.geometry("600x400")
+    servicios.config(bg="#ffffff")
 
 
+    tk.Label(
+        servicios,
+        text="Lista de Servicios Disponibles",
+        bg="#ffffff",
+        font=("Arial", 14, "bold")
+    ).pack(pady=15)
 
-    def mostrar_precio(event):
-        nombre_servicio = combo_servicios.get()
-        if nombre_servicio in win.servicios_dict:
-            precio = win.servicios_dict[nombre_servicio][1]
-            precio_var.set(f"Q{precio:.2f}")
+    columnas = ("ID", "Servicio", "Precio")
+    tabla = ttk.Treeview(servicios, columns=columnas, show="headings", height=12)
+    tabla.pack(padx=15, pady=10, fill="both", expand=True)
 
-    combo_servicios.bind("<<ComboboxSelected>>", mostrar_precio)
+    for col in columnas:
+        tabla.heading(col, text=col)
+        tabla.column(col, anchor="center", width=130)
 
-    def cobrar_servicio():
-        nombre = combo_servicios.get()
-        if not nombre:
-            messagebox.showwarning("Atención", "Seleccione un servicio antes de cobrar.")
-            return
+    def cargar_servicios():
+        try:
+            tabla.delete(*tabla.get_children())
 
-        service_id, precio = win.servicios_dict[nombre]
-        venta_id = id_creation("V")
-        fecha = date.today()
-        cantidad = 1
-        gen_db_x.execute("""
-                        INSERT INTO barbershop_sales
-                        (id, sale_date, product_id, service_id, quantity, total_amount)
-                        VALUES (%s, %s, NULL, %s, %s, %s);
-                    """, (venta_id, fecha, service_id, cantidad, precio))
-        messagebox.showinfo(
-            "Cobro realizado",
-            f"Venta registrada con éxito.\n\nCódigo de venta: {venta_id}\n"
-            f"Servicio: {nombre}\nTotal: Q{precio:.2f}"
-        )
+            con = gen_db_x._get_conn()
+            if con is None:
+                messagebox.showerror("Error", "No se pudo conectar a la base de datos")
+                return
 
-    ttk.Button(win, text="Cobrar", command=cobrar_servicio).place(x=200, y=180)
+            cur = con.cursor()
+            cur.execute("SELECT id, name, price FROM b_services ORDER BY name ASC;")
+            servicios = cur.fetchall()
+            con.close()
 
-    ttk.Button(win, text="Cobrar", command=cobrar_servicio).place(x=200, y=180)
+            for svc in servicios:
+                tabla.insert("", tk.END, values=svc)
 
-    svc_db.cargar_servicios(win, combo_servicios)
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudieron cargar los servicios:\n{e}")
 
-    win.mainloop()
+    frame_botones = tk.Frame(servicios, bg="#ffffff")
+    frame_botones.pack(pady=10)
 
+    ttk.Button(frame_botones, text="Actualizar lista", command=cargar_servicios).grid(row=0, column=0, padx=10)
+    ttk.Button(frame_botones, text="Volver al menú", command=servicios.destroy).grid(row=0, column=1, padx=10)
+
+    cargar_servicios()
+
+    servicios.mainloop()
