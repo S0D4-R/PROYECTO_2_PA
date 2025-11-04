@@ -513,11 +513,7 @@ def mod_elm_svcs(menu, main_mod_m, m_e_s, style):
         id_svc = valores[0]
         if messagebox.askyesno("Confirmar", f"¿Eliminar el servicio '{valores[1]}'?"):
             try:
-                con = gen_db_x._get_conn()
-                cur = con.cursor()
-                cur.execute("DELETE FROM b_services WHERE id=%s;", (id_svc,))
-                con.commit()
-                con.close()
+                gen_db_x.execute("DELETE FROM b_services WHERE id=%s;", (id_svc,))
                 messagebox.showinfo("Éxito", "Servicio eliminado correctamente.")
                 cargar_servicios(tabla)
             except Exception as e:
