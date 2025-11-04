@@ -71,6 +71,8 @@ def appointments_menu():
         tabla.column(col, width=150)
     tabla.pack(pady=20, fill="both", expand=True)
 
+    tabla.bind("<Double-1>", lambda e: seleccionar_cita())
+
     def cargar_citas():
         tabla.delete(*tabla.get_children())
         try:
@@ -97,23 +99,33 @@ def appointments_menu():
         try:
             fecha1 = datetime.strptime(fecha_input, "%d-%m-%Y")
             fecha = fecha1.strftime("%Y-%m-%d")
+            servicio_id = servicio.split(" - ")[0].strip()
 
-            servicio_id = servicio.split(" - ")[0]
+            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
+            cita_existente  = appointment_db.iterable_db(consulta)
+
+            if cita_existente:
+                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora.")
+                return
+
             gen_db_x.execute("""
                 INSERT INTO barbershop_appointments (id, client_name, service_id, appointment_date, appointment_time)
                 VALUES (%s, %s, %s, %s, %s);
             """, (id_cita, nombre, servicio_id, fecha, hora))
 
             messagebox.showinfo("Éxito", "Cita registrada correctamente.")
-            cargar_citas()
 
-            entry_id.config(state="normal")
-            entry_id.delete(0, tk.END)
-            entry_id.insert(0, id_creation("A"))
-            entry_id.config(state="readonly")
+            entry_nombre.delete(0, tk.END)
+            combo_servicio.set('')
+            entry_fecha.delete(0, tk.END)
+            entry_hora.delete(0, tk.END)
+
+            cargar_citas()
+            limpiar_campos()
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo registrar la cita:\n{e}")
+
 
     def editar_cita():
         seleccion = tabla.selection()
@@ -136,7 +148,14 @@ def appointments_menu():
         try:
             fecha1 = datetime.strptime(fecha_input, "%d-%m-%Y")
             fecha = fecha1.strftime("%Y-%m-%d")
-            servicio_id = servicio.split(" - ")[0]
+            servicio_id = servicio.split(" - ")[0].strip()
+
+            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
+            citas_misma_hora = appointment_db.iterable_db(consulta)
+
+            if citas_misma_hora:
+                messagebox.showwarning("Conflicto", f"Ya existe otra cita registrada a las {hora}.")
+                return
 
             gen_db_x.execute("""
                 UPDATE barbershop_appointments 
@@ -146,9 +165,12 @@ def appointments_menu():
 
             messagebox.showinfo("Éxito", "Cita actualizada correctamente.")
             cargar_citas()
+            limpiar_campos()
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo editar la cita:\n{e}")
+
+
 
     def eliminar_cita():
         seleccion = tabla.selection()
@@ -181,5 +203,38 @@ def appointments_menu():
                 cargar_citas()
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo eliminar la cita:\n{e}")
+
+    def seleccionar_cita():
+        seleccion = tabla.selection()
+        if not seleccion:
+            return
+        item = tabla.item(seleccion[0])
+        datos = item["values"]
+
+        entry_id.config(state="normal")
+        entry_id.delete(0, tk.END)
+        entry_id.insert(0, datos[0])
+        entry_id.config(state="readonly")
+
+        entry_nombre.delete(0, tk.END)
+        entry_nombre.insert(0, datos[1])
+
+        combo_servicio.set(datos[2])
+        entry_fecha.delete(0, tk.END)
+        entry_fecha.insert(0, datos[3])
+        entry_hora.delete(0, tk.END)
+        entry_hora.insert(0, datos[4])
+
+
+    def limpiar_campos():
+        entry_id.config(state="normal")
+        entry_id.delete(0, tk.END)
+        entry_id.insert(0, id_creation("A"))
+        entry_id.config(state="readonly")
+
+        entry_nombre.delete(0, tk.END)
+        combo_servicio.set("Seleccione un servicio")
+        entry_fecha.delete(0, tk.END)
+        entry_hora.delete(0, tk.END)
 
     cargar_citas()
