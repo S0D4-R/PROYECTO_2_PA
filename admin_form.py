@@ -47,17 +47,17 @@ lord = Lord()
 
 
 
-def get_info(frame, entry, main_window):
+def get_info(frame, entry):
     temp_pass = entry.get()
     if temp_pass == lord.contra:
         frame.destroy()
-        return admin_menu(main_window)
+        return admin_menu()
     else:
         frame.destroy()
-        return login(main_window)
+        return login()
 
 
-def login(prev_window):
+def login():
     login_form = tk.Tk()
     login_form.geometry("400x100")
     login_form.title("LOGIN")
@@ -82,7 +82,7 @@ def login(prev_window):
 
     button_get = ttk.Button(login_form, text="Log In",
                             style="Custom.TButton",
-                            command=lambda: get_info(login_form, pass_text, prev_window))
+                            command=lambda: get_info(login_form, pass_text))
     button_get.grid(row=0, column=0, padx=290, pady=(50, 10), sticky="ew")
 
 
@@ -140,6 +140,12 @@ def reportes(menu, main_frame, frame_reportes, style, form):
 
     menu.add(frame_reportes, text="REPORTES")
     menu.select(frame_reportes)
+
+
+def close_tabs(menu, frame1, frame2):
+    menu.select(frame1)
+    menu.hide(frame2)
+
 
 def check_date(date_str):
     try:
@@ -551,8 +557,7 @@ def modify_eliminate(menu, main_frame, style):
                command=lambda: close_tabs(menu, main_frame, mod_prods)).grid(row=3, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
 
-def admin_menu(prev_window):
-    manipulate_window(prev_window, "C")
+def admin_menu():
     admin_form = tk.Tk()
     admin_form.title("Administrador")
     admin_form.geometry("700x600")
