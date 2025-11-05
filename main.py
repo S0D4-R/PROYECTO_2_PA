@@ -20,7 +20,18 @@ class Main_Program:
         main = tk.Tk()
         main.title("Master Of Style")
         main.config(bg="#ffffff")
-        main.geometry("700x370")
+        window_width = 700
+        window_height = 370
+
+
+        screen_width = main.winfo_screenwidth()
+        screen_height = main.winfo_screenheight()
+
+
+        center_x = (screen_width // 2) - (window_width // 2)
+        center_y = (screen_height // 2) - (window_height // 2)
+
+        main.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
 
 
         style = ttk.Style(main)

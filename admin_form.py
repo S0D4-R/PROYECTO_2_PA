@@ -61,6 +61,18 @@ def get_info(frame, entry, main_window):
 def login(prev_window):
     login_form = tk.Tk()
     login_form.geometry("400x100")
+    window_width = 400
+    window_height = 100
+
+    screen_width = login_form.winfo_screenwidth()
+    screen_height = login_form.winfo_screenheight()
+
+
+    center_x = (screen_width // 2) - (window_width // 2)
+    center_y = (screen_height // 2) - (window_height // 2)
+
+
+    login_form.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
     login_form.title("LOGIN")
     login_form.config(bg="#ffffff")
 
@@ -553,9 +565,19 @@ def modify_eliminate(menu, main_frame, style):
 
 def admin_menu(prev_window):
     admin_form = tk.Tk()
-    manipulate_window(prev_window,admin_form, "C")
+    #manipulate_window(prev_window,admin_form, "C")
     admin_form.title("Administrador")
-    admin_form.geometry("700x600")
+    window_width = 700
+    window_height = 600
+
+
+    screen_width = admin_form.winfo_screenwidth()
+    screen_height = admin_form.winfo_screenheight()
+
+    center_x = (screen_width // 2) - (window_width // 2)
+    center_y = (screen_height // 2) - (window_height // 2)
+
+    admin_form.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
     admin_form.config(bg="#ffffff")
     admin_style = ttk.Style(admin_form)
     admin_style.theme_use("clam")
