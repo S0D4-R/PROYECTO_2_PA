@@ -13,8 +13,10 @@ from general_processes import *
 
 
 class Main_Program:
-    @staticmethod
-    def initialization(BASE_DIR):
+    def __init__(self):
+        self.initialization(BASE_DIR)
+    #@staticmethod
+    def initialization(self, BASE_DIR):
         main = tk.Tk()
         main.title("Master Of Style")
         main.config(bg="#ffffff")
@@ -64,4 +66,4 @@ class Main_Program:
 
 core = Main_Program()
 
-core.initialization(BASE_DIR)
+#core.initialization(BASE_DIR)

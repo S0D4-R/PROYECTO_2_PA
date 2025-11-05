@@ -2,7 +2,6 @@ from admin_form import  *
 from tkinter import messagebox
 import random
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #DB_CONN----------------------------------------------------------------------------------------------------------------
 class DataBaseX():
@@ -308,5 +307,7 @@ def modify_eliminate(menu, main_frame, style):
 def manipulate_window(first_window, second_window, op_type):
     if op_type == "C":
         first_window.destroy()
-    if op_type == "O":
+    elif op_type == "O":
         pass
+    elif op_type == "CO":
+        second_window.destroy()
