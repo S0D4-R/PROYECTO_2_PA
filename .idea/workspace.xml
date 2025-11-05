@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="2. JD boton volver al menu sells forms y services_form">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appointments_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/appointments_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sells_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/sells_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/services_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_form.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760817501954</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="13. JD cambio paleta de colores">
+      <option name="closed" value="true" />
+      <created>1762371507022</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1762371507022</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -200,6 +205,7 @@
     <MESSAGE value="1. JD boton volver al menu product forms y appoiments_form" />
     <MESSAGE value="1. JD boton volver al menu sells forms y services_form" />
     <MESSAGE value="2. JD boton volver al menu sells forms y services_form" />
-    <option name="LAST_COMMIT_MESSAGE" value="2. JD boton volver al menu sells forms y services_form" />
+    <MESSAGE value="13. JD cambio paleta de colores" />
+    <option name="LAST_COMMIT_MESSAGE" value="13. JD cambio paleta de colores" />
   </component>
 </project>
