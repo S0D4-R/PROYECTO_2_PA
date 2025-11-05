@@ -1,3 +1,4 @@
+
 import os
 import tkinter as tk
 from tkinter.messagebox import showerror
@@ -66,8 +67,7 @@ def login(prev_window):
     gen_style = ttk.Style(login_form)
     gen_style.theme_use("clam")
     gen_style.configure("Custom.TButton",
-                        background="#000000",
-                        foreground="#ffffff",
+                        background="#F5F1F0",
                         font=('Arial', 10),
                         bordercolor="#000000",
                         darkcolor="#000000",
@@ -552,8 +552,8 @@ def modify_eliminate(menu, main_frame, style):
 
 
 def admin_menu(prev_window):
-    manipulate_window(prev_window, "C")
     admin_form = tk.Tk()
+    manipulate_window(prev_window,admin_form, "C")
     admin_form.title("Administrador")
     admin_form.geometry("700x600")
     admin_form.config(bg="#ffffff")
