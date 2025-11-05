@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="2. JD boton volver al menu sells forms y services_form">
+    <list default="true" id="7ecf6110-7e53-42db-810e-0ba776067b8d" name="Changes" comment="12. JD Probando cambio de paleta de colores">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_form.py" afterDir="false" />
     </list>
@@ -179,7 +179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762371507022</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="12. JD Probando cambio de paleta de colores">
+      <option name="closed" value="true" />
+      <created>1762377083403</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1762377083404</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,6 +214,7 @@
     <MESSAGE value="1. JD boton volver al menu sells forms y services_form" />
     <MESSAGE value="2. JD boton volver al menu sells forms y services_form" />
     <MESSAGE value="13. JD cambio paleta de colores" />
-    <option name="LAST_COMMIT_MESSAGE" value="13. JD cambio paleta de colores" />
+    <MESSAGE value="12. JD Probando cambio de paleta de colores" />
+    <option name="LAST_COMMIT_MESSAGE" value="12. JD Probando cambio de paleta de colores" />
   </component>
 </project>
