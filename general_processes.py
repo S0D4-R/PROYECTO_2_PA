@@ -2,6 +2,8 @@ from admin_form import  *
 from tkinter import messagebox
 import random
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #DB_CONN----------------------------------------------------------------------------------------------------------------
 class DataBaseX():
     def __init__(self):
@@ -171,6 +173,12 @@ class Appointments_DB(DataBaseX):
 
 gen_db_x = DataBase_For_Reports()
 
+
+
+#Main menu
+
+
+
 #AUTOGENERADOR_ID's-----------------------------------------------------------------------------------------------------
 def id_creation(typeP):
     ran_code1 = random.randint(10000, 99999)
@@ -295,3 +303,10 @@ def modify_eliminate(menu, main_frame, style):
     exit_button = ttk.Button(mod_prods, text="SALIR", style="Custom.TButton",
                              command=lambda: close_tabs(menu, main_frame, mod_prods))
     exit_button.grid(row=2, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
+
+#close window------------------------------------------------------------------------------------------------------------
+def manipulate_window(first_window, second_window, op_type):
+    if op_type == "C":
+        first_window.destroy()
+    if op_type == "O":
+        pass
