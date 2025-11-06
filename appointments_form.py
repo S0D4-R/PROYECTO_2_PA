@@ -11,7 +11,17 @@ appointment_db = Appointments_DB()
 def appointments_menu(parent=None):
     citas = tk.Toplevel(parent)
     citas.title("Gestión de Citas")
-    citas.geometry("1000x550")
+
+    window_width = 1000
+    window_height = 550
+
+    screen_width = citas.winfo_screenwidth()
+    screen_height = citas.winfo_screenheight()
+
+    center_x = (screen_width // 2) - (window_width // 2)
+    center_y = (screen_height // 2) - (window_height // 2)
+
+    citas.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
     citas.config(bg="#ffffff")
 
     columns = ("id", "nombre", "servicio", "fecha", "hora", "estado")

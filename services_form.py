@@ -7,6 +7,16 @@ def services_menu():
     servicios = tk.Toplevel()
     servicios.title("Servicios disponibles")
     servicios.geometry("600x400")
+    window_width = 600
+    window_height = 400
+
+    screen_width = servicios.winfo_screenwidth()
+    screen_height = servicios.winfo_screenheight()
+
+    center_x = (screen_width // 2) - (window_width // 2)
+    center_y = (screen_height // 2) - (window_height // 2)
+
+    servicios.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
     servicios.config(bg="#ffffff")
 
 
