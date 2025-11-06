@@ -183,6 +183,12 @@ def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
         prod_stock = int(stock_e.get())
         prod_supplier = supp_e.get()
 
+        if not all([prod_name, prod_brand, prod_category, prod_supplier]):
+            messagebox.showerror("Error de datos", "Todos los campos son obligatorios.")
+            return
+        prod_category_id = prod_category.split(" - ")[0]
+        prod_supplier_id = prod_supplier.split(" - ")[0]
+
         if prod_price < 0 or prod_stock < 0:
             raise ValueError
         else:
@@ -190,7 +196,7 @@ def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
                 INSERT INTO barbershop_products 
                 (product_name, brand, category, price, stock_quantity, supplier) 
                 VALUES (%s, %s, %s, %s, %s, %s); 
-            """, (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier))
+            """, (prod_name, prod_brand, prod_category_id, prod_price, prod_stock, prod_supplier_id))
             messagebox.showinfo("ÉXITO", f"Producto '{prod_name}' guardado con éxito.")
     except ValueError:
         messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos mayores a 0.")
@@ -214,7 +220,8 @@ def agregar_producto(menu, main_frame, frame_add_prods, style):
     brand_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     brand_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
 
-    tk.Label(frame_add_prods, text="Categoría:", background="#F5F1F0").grid(row=2, column=0, padx=10, pady=5,sticky="nw")
+    tk.Label(frame_add_prods, text="Categoría:", background="#F5F1F0").grid(row=2, column=0, padx=10, pady=5,
+                                                                            sticky="nw")
     try:
         con = gen_db_x._get_conn()
         cur = con.cursor()
