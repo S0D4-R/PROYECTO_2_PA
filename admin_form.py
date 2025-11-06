@@ -122,32 +122,17 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     frame_reportes.grid_columnconfigure(0, weight=0)
     frame_reportes.grid_columnconfigure(1, weight=1)
 
-    # Fecha inicio
     first_date_label = tk.Label(frame_reportes, text="Fecha de inicio:", background="#F5F1F0")
     first_date_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
     first_date_entry = DateEntry(
         frame_reportes,
-        width=20,
-        background='#F5F1F0',
-        foreground='black',
-        borderwidth=2,
-        date_pattern='yyyy-mm-dd',
-        locale='es_ES'
-    )
+        width=20, background='#F5F1F0', foreground='black', borderwidth=2, date_pattern='yyyy-mm-dd')
     first_date_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
 
-    # Fecha final
     second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#F5F1F0")
     second_date_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
     second_date_entry = DateEntry(
-        frame_reportes,
-        width=20,
-        background='#F5F1F0',
-        foreground='black',
-        borderwidth=2,
-        date_pattern='yyyy-mm-dd',
-        locale='es_ES'
-    )
+        frame_reportes, width=20, background='#F5F1F0', foreground='black', borderwidth=2, date_pattern='yyyy-mm-dd')
     second_date_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
 
 
@@ -229,10 +214,20 @@ def agregar_producto(menu, main_frame, frame_add_prods, style):
     brand_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     brand_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
 
-    cat_label = tk.Label(frame_add_prods, text="Categoría:", background="#F5F1F0")
-    cat_label.grid(row=2, column=0, padx=10, pady=5, sticky="nw")
-    cat_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
-    cat_entry.grid(row=2, column=1, padx=10, pady=5, sticky="new")
+    tk.Label(frame_add_prods, text="Categoría:", background="#F5F1F0").grid(row=2, column=0, padx=10, pady=5,sticky="nw")
+    try:
+        con = gen_db_x._get_conn()
+        cur = con.cursor()
+        cur.execute("SELECT id, category_name FROM product_categories;")
+        categorias = cur.fetchall()
+        con.close()
+        valores_cat = [f"{c[0]} - {c[1]}" for c in categorias]
+    except Exception as e:
+        valores_cat = []
+        messagebox.showerror("Error BD", f"No se pudieron cargar las categorías:\n{e}")
+    combo_categoria = ttk.Combobox(frame_add_prods, values=valores_cat, state="readonly")
+    combo_categoria.grid(row=2, column=1, padx=10, pady=5, sticky="new")
+    combo_categoria.set("Seleccione una categoría")
 
     price_label = tk.Label(frame_add_prods, text="Precio:", background="#F5F1F0")
     price_label.grid(row=3, column=0, padx=10, pady=5, sticky="nw")
@@ -244,15 +239,26 @@ def agregar_producto(menu, main_frame, frame_add_prods, style):
     stock_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     stock_entry.grid(row=4, column=1, padx=10, pady=5, sticky="new")
 
-    sup_label = tk.Label(frame_add_prods, text="Proveedor:", background="#F5F1F0",)
-    sup_label.grid(row=5, column=0, padx=10, pady=5, sticky="nw")
-    sup_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
-    sup_entry.grid(row=5, column=1, padx=10, pady=5, sticky="new")
+    tk.Label(frame_add_prods, text="Proveedor:", background="#F5F1F0").grid(row=5, column=0, padx=10, pady=5,
+                                                                            sticky="nw")
+    try:
+        con = gen_db_x._get_conn()
+        cur = con.cursor()
+        cur.execute("SELECT id, provider_name FROM product_providers;")
+        proveedores = cur.fetchall()
+        con.close()
+        valores_prov = [f"{p[0]} - {p[1]}" for p in proveedores]
+    except Exception as e:
+        valores_prov = []
+        messagebox.showerror("Error BD", f"No se pudieron cargar los proveedores:\n{e}")
+    combo_proveedor = ttk.Combobox(frame_add_prods, values=valores_prov, state="readonly")
+    combo_proveedor.grid(row=5, column=1, padx=10, pady=5, sticky="new")
+    combo_proveedor.set("Seleccione un proveedor")
 
     frame_add_prods.grid_rowconfigure(6, weight=1)
 
     save_button = ttk.Button(frame_add_prods, text="GUARDAR", style="Custom.TButton",
-                             command=lambda: add_new_prod(prodname_entry, brand_entry, cat_entry, price_entry, stock_entry, sup_entry))
+                             command=lambda: add_new_prod(prodname_entry, brand_entry, combo_categoria, price_entry, stock_entry, combo_proveedor))
     save_button.grid(row=7, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     exit_button = ttk.Button(frame_add_prods, text="SALIR", style="Custom.TButton",
