@@ -1,17 +1,16 @@
 import os
 import tkinter as tk
 from tkinter.messagebox import showerror
+from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
 from PIL import Image, ImageTk
-from tkinter import ttk
-from tkinter import messagebox
 import json
-from pyuiWidgets.imageLabel import ImageLabel
 import psycopg2
-from general_processes import *
 import datetime
 import random
+from pyuiWidgets.imageLabel import ImageLabel
+from general_processes import *
 from Provedores_y_categorias_form import categories_menu, providers_menu
-
 
 PASSWORD_FILE = "password.json"
 DEFAULT_PASSWORD = "123"
@@ -48,7 +47,6 @@ class Lord:
 lord = Lord()
 
 
-
 def get_info(frame, entry, main_window):
     temp_pass = entry.get()
     if temp_pass == lord.contra:
@@ -82,11 +80,26 @@ def login(prev_window):
     button_get.grid(row=0, column=0, padx=290, pady=(50, 10), sticky="ew")
 
 
-def gen_report(fdate, sdate, treeview):
-    if check_date(fdate.get()) and check_date(sdate.get()):
-        gen_db_x.reports("SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()), treeview)
-    else:
-        messagebox.showerror("ERROR", "Fecha inválida")
+
+def gen_report_calendar(fdate_widget, sdate_widget, treeview):
+    try:
+        fecha_inicio = fdate_widget.get_date()
+        fecha_fin = sdate_widget.get_date()
+
+        if fecha_inicio > fecha_fin:
+            messagebox.showerror("ERROR", "La fecha de inicio debe ser anterior a la fecha final")
+            return
+
+        fecha_inicio_str = fecha_inicio.strftime('%Y-%m-%d')
+        fecha_fin_str = fecha_fin.strftime('%Y-%m-%d')
+
+        gen_db_x.reports(
+            "SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;",
+            (fecha_inicio_str, fecha_fin_str),
+            treeview
+        )
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error al generar el reporte: {e}")
 
 
 def reportes(menu, main_frame, frame_reportes, style, form):
@@ -97,46 +110,57 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     frame_reportes.grid_columnconfigure(0, weight=0)
     frame_reportes.grid_columnconfigure(1, weight=1)
 
+    # Fecha inicio
     first_date_label = tk.Label(frame_reportes, text="Fecha de inicio:", background="#F5F1F0")
     first_date_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
-    first_date_entry = tk.Entry(frame_reportes, background="#F5F1F0")
+    first_date_entry = DateEntry(
+        frame_reportes,
+        width=20,
+        background='#F5F1F0',
+        foreground='black',
+        borderwidth=2,
+        date_pattern='yyyy-mm-dd',
+        locale='es_ES'
+    )
     first_date_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
-    first_date_entry.insert(0, "AAAA-MM-DD")
 
+    # Fecha final
     second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#F5F1F0")
     second_date_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
-    second_date_entry = tk.Entry(frame_reportes, background="#F5F1F0")
+    second_date_entry = DateEntry(
+        frame_reportes,
+        width=20,
+        background='#F5F1F0',
+        foreground='black',
+        borderwidth=2,
+        date_pattern='yyyy-mm-dd',
+        locale='es_ES'
+    )
     second_date_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
-    second_date_entry.insert(0, "AAAA-MM-DD")
+
 
     report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6", "7", "8"), show="headings")
-    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio", "6": "Fecha", "7": "Cantidad", "8": "Precio"}
+    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio",
+                  "6": "Fecha", "7": "Cantidad", "8": "Precio"}
     for col_id, text in column_map.items():
         report_table.heading(col_id, text=text, anchor=tk.CENTER)
 
-    report_table.column("1", width=30, anchor=tk.CENTER, stretch=tk.NO)
-    report_table.column("2", width=100, anchor=tk.CENTER)
-    report_table.column("3", width=120, anchor=tk.W)
-    report_table.column("4", width=120, anchor=tk.W)
-    report_table.column("5", width=60, anchor=tk.E)
-    report_table.column("6", width=60, anchor=tk.E)
-    report_table.column("7", width=60, anchor=tk.E)
-    report_table.column("8", width=60, anchor=tk.E)
-
+    for col in column_map.keys():
+        report_table.column(col, width=100, anchor=tk.CENTER)
     report_table.grid(row=2, column=0, columnspan=2, padx=10, pady=15, sticky="nsew")
     frame_reportes.grid_rowconfigure(3, weight=1)
 
-    save_button = ttk.Button(frame_reportes, text="GENERAR", style="Custom.TButton",
-                             command=lambda: gen_report(first_date_entry, second_date_entry, report_table))
+
+    save_button = ttk.Button(
+        frame_reportes,text="GENERAR",style="Custom.TButton",command=lambda: gen_report_calendar(first_date_entry, second_date_entry, report_table))
     save_button.grid(row=4, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
-    exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton",
-                             command=lambda: close_tabs(menu, main_frame, frame_reportes))
+    exit_button = ttk.Button(
+        frame_reportes, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_reportes))
     exit_button.grid(row=5, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     menu.add(frame_reportes, text="REPORTES")
     menu.select(frame_reportes)
-
 def check_date(date_str):
     try:
         temp_date = date_str.split("-")
