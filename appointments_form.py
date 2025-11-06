@@ -7,8 +7,8 @@ from datetime import datetime
 
 appointment_db = Appointments_DB()
 
-def appointments_menu():
-    citas = tk.Toplevel()
+def appointments_menu(parent=None):
+    citas = tk.Toplevel(parent)
     citas.title("Gestión de Citas")
     citas.geometry("1000x550")
     citas.config(bg="#ffffff")
@@ -64,7 +64,7 @@ def appointments_menu():
     ttk.Button(frame_botones, text="Atender", style="Accion.TButton", command=lambda: atender_cita()).pack(fill="x", pady=6)
     ttk.Button(frame_botones, text="Eliminar", style="Accion.TButton", command=lambda: eliminar_cita()).pack(fill="x", pady=6)
     ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=6)
-    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas.destroy).pack(fill="x", pady=6)
+    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=lambda: back_to_menu(citas, parent)).pack(fill="x", pady=6)
 
     for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
         tabla.heading(col, text=text)
@@ -236,5 +236,10 @@ def appointments_menu():
         combo_servicio.set("Seleccione un servicio")
         entry_fecha.delete(0, tk.END)
         entry_hora.delete(0, tk.END)
+
+    def back_to_menu(win, parent):
+        win.destroy()  # Cierra solo la ventana de citas
+        if parent is not None:
+            parent.deiconify()  # Vuelve a mostrar el menú principal
 
     cargar_citas()
