@@ -44,13 +44,13 @@ class Main_Program:
         menu_0.add_command(label="Salir", command=lambda: main.destroy())
         menu.add_cascade(label="Opciones", menu=menu_0)
 
-        style.configure("button.TButton", background="#000000", foreground="#ffffff")
+        style.configure("button.TButton", background="#0F2F6C", foreground="#ffffff")
         style.map("button.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
         button = ttk.Button(master=main, text="CONSULTAR PRODUCTOS", style="button.TButton", command=lambda: products_menu())
         button.place(x=56, y=114, width=175, height=48)
 
-        style.configure("button1.TButton", background="#000000", foreground="#ffffff")
+        style.configure("button1.TButton", background="#F02E02", foreground="#ffffff")
         style.map("button1.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
         button1 = ttk.Button(master=main, text="CITAS", style="button1.TButton",
@@ -58,13 +58,13 @@ class Main_Program:
 
         button1.place(x=55, y=40, width=175, height=48)
 
-        style.configure("button2.TButton", background="#000000", foreground="#ffffff")
+        style.configure("button2.TButton", background="#0F2F6C", foreground="#ffffff")
         style.map("button2.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
         button2 = ttk.Button(master=main, text="SERVICIOS", style="button2.TButton", command=lambda: services_menu())
         button2.place(x=56, y=255, width=175, height=48)
 
-        style.configure("button3.TButton", background="#000000", foreground="#ffffff")
+        style.configure("button3.TButton", background="#F02E02", foreground="#ffffff")
         style.map("button3.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
         button3 = ttk.Button(master=main, text="VENDER", style="button3.TButton", command=lambda: sells_menu())
