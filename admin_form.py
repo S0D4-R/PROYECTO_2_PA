@@ -10,7 +10,7 @@ import psycopg2
 from general_processes import *
 import datetime
 import random
-from Provedores_y_categorias_form import categories_menu
+from Provedores_y_categorias_form import categories_menu, providers_menu
 
 
 PASSWORD_FILE = "password.json"
@@ -592,17 +592,20 @@ def admin_menu(prev_window):
     ttk.Button(frame_menu_inicial, text="AGREGAR CATEGORÍA", style="Custom.TButton",
                command=categories_menu).grid(row=2, column=0, padx=250, pady=10, sticky="ew")
 
+    ttk.Button(frame_menu_inicial,text="AGREGAR PROVEEDOR",style="Custom.TButton",
+        command=providers_menu).grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+
     ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA", style="Custom.TButton",
-               command=lambda: change_pass(inside_menu, frame_menu_inicial, frame_cambio_c, admin_style)).grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: change_pass(inside_menu, frame_menu_inicial, frame_cambio_c, admin_style)).grid(row=4, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="REPORTES", style="Custom.TButton",
-               command=lambda: reportes(inside_menu, frame_menu_inicial, frame_reports, admin_style, admin_form)).grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: reportes(inside_menu, frame_menu_inicial, frame_reports, admin_style, admin_form)).grid(row=5, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="MODIFICAR/ELIMINAR REGISTROS", style="Custom.TButton",
-               command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style)).grid(row=5, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style)).grid(row=6, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="SALIR", style="Custom.TButton",
-               command=lambda: admin_form.destroy()).grid(row=6, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: admin_form.destroy()).grid(row=7, column=0, padx=250, pady=10, sticky="ew")
 
     admin_form.mainloop()
 
