@@ -11,6 +11,14 @@ from tkinter import simpledialog
 import random
 import datetime
 
+def centrar_ventana(ventana, ancho, alto):
+    ventana.update_idletasks()
+    screen_width = ventana.winfo_screenwidth()
+    screen_height = ventana.winfo_screenheight()
+    center_x = (screen_width // 2) - (ancho // 2)
+    center_y = (screen_height // 2) - (alto // 2)
+    ventana.geometry(f"{ancho}x{alto}+{center_x}+{center_y}")
+
 class DataBase_Sells(DataBaseX):
     def c_in_c(self, nit, name):
         con = self._get_conn()
@@ -73,17 +81,18 @@ sales_db = DataBase_Sells()
 
 def sells_menu():
     def obtener_client_info():
-        client_win = tk.Toplevel()
-        client_win.title("Datos del Cliente")
-        client_win.geometry("400x250")
-        client_win.config(bg="#ffffff")
+        cliente = tk.Toplevel()
+        cliente.title("Datos del Cliente")
+        cliente.geometry("400x250")
+        cliente.config(bg="#ffffff")
+        centrar_ventana(cliente,500,350)
 
-        tk.Label(client_win, text="NIT del Cliente:", bg="#ffffff").pack(pady=5)
-        nit_entry = tk.Entry(client_win)
+        tk.Label(cliente, text="NIT del Cliente:", bg="#ffffff").pack(pady=5)
+        nit_entry = tk.Entry(cliente)
         nit_entry.pack(pady=5)
 
-        tk.Label(client_win, text="Nombre del Cliente:", bg="#ffffff").pack(pady=5)
-        name_entry = tk.Entry(client_win)
+        tk.Label(cliente, text="Nombre del Cliente:", bg="#ffffff").pack(pady=5)
+        name_entry = tk.Entry(cliente)
         name_entry.pack(pady=5)
 
         def continuar():
@@ -96,35 +105,35 @@ def sells_menu():
 
             try:
                 client_id = sales_db.c_in_c(nit, nombre)
-                client_win.destroy()
+                cliente.destroy()
                 abrir_ventana_ventas(client_id, nombre)
 
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo registrar el cliente:\n{e}")
 
-        tk.Button(client_win, text="Continuar", command=continuar, bg="#4CAF50", fg="white").pack(pady=20)
+        tk.Button(cliente, text="Continuar", command=continuar, bg="#4CAF50", fg="white").pack(pady=20)
 
     def abrir_ventana_ventas(client_id, client_name):
-        """Abre la ventana de ventas y permite agregar productos o servicios"""
-        ventas_win = tk.Toplevel()
-        ventas_win.title("Registro de Ventas")
-        ventas_win.geometry("800x500")
-        ventas_win.config(bg="#ffffff")
+        ventas = tk.Toplevel()
+        ventas.title("Registro de Ventas")
+        ventas.geometry("800x500")
+        ventas.config(bg="#ffffff")
+        centrar_ventana(ventas,800,500)
 
-        tk.Label(ventas_win, text=f"Cliente: {client_name}", bg="#ffffff", font=("Arial", 12, "bold")).pack(pady=10)
+        tk.Label(ventas, text=f"Cliente: {client_name}", bg="#ffffff", font=("Arial", 12, "bold")).pack(pady=10)
 
         productos = appointment_db.iterable_db("SELECT id, product_name, price FROM barbershop_products")
 
         servicios = appointment_db.iterable_db("SELECT id, name, price FROM b_services")
 
         tipo_var = tk.StringVar()
-        tipo_combo = ttk.Combobox(ventas_win, textvariable=tipo_var, values=["Producto", "Servicio"], state="readonly")
+        tipo_combo = ttk.Combobox(ventas, textvariable=tipo_var, values=["Producto", "Servicio"], state="readonly")
         tipo_combo.set("Producto")
         tipo_combo.pack(pady=10)
 
 
         item_var = tk.StringVar()
-        item_combo = ttk.Combobox(ventas_win, textvariable=item_var, width=50)
+        item_combo = ttk.Combobox(ventas, textvariable=item_var, width=50)
         item_combo.pack(pady=10)
 
         def actualizar_items(*args):
@@ -136,13 +145,13 @@ def sells_menu():
         tipo_combo.bind("<<ComboboxSelected>>", actualizar_items)
         actualizar_items()
 
-        tk.Label(ventas_win, text="Cantidad:").pack()
-        cantidad_entry = tk.Entry(ventas_win)
+        tk.Label(ventas, text="Cantidad:").pack()
+        cantidad_entry = tk.Entry(ventas)
         cantidad_entry.pack(pady=5)
         cantidad_entry.insert(0, "1")
 
 
-        tabla = ttk.Treeview(ventas_win, columns=("item", "precio", "cantidad", "subtotal"), show="headings")
+        tabla = ttk.Treeview(ventas, columns=("item", "precio", "cantidad", "subtotal"), show="headings")
         tabla.heading("item", text="Producto/Servicio")
         tabla.heading("precio", text="Precio Unitario")
         tabla.heading("cantidad", text="Cantidad")
@@ -175,7 +184,7 @@ def sells_menu():
             tabla.insert("", "end", values=(nombre, f"Q{precio}", cantidad, f"Q{subtotal}"))
             item_combo.set("")
 
-        tk.Button(ventas_win, text="Agregar", command=agregar_item, bg="#2196F3", fg="white").pack(pady=5)
+        tk.Button(ventas, text="Agregar", command=agregar_item, bg="#2196F3", fg="white").pack(pady=5)
 
         def cobrar():
             if not carrito:
@@ -188,10 +197,10 @@ def sells_menu():
 
             try:
                 sales_db.cobro(carrito, sale_id, client_id, fecha, total)
-                ventas_win.destroy()
+                ventas.destroy()
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo registrar la venta:\n{e}")
 
-        tk.Button(ventas_win, text="Cobrar", command=cobrar, bg="#4CAF50", fg="white").pack(pady=10)
+        tk.Button(ventas, text="Cobrar", command=cobrar, bg="#4CAF50", fg="white").pack(pady=10)
 
     obtener_client_info()
