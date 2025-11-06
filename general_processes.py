@@ -195,6 +195,10 @@ def id_creation(typeP):
         return "IDC" + str(ran_code1) + str(ran_code2)
     elif typeP == "DV":
         return "DTV" + str(ran_code1) + str(ran_code2)
+    elif typeP == "P":
+        return "PP" + str(ran_code1) + str(ran_code2)
+    elif typeP  == "B":
+        return "CAT" + str(ran_code1) + str(ran_code2)
     else:
         return None
 

@@ -4,11 +4,12 @@ from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from general_processes import *
 from datetime import datetime
+from tkcalendar import DateEntry
 
 appointment_db = Appointments_DB()
 
-def appointments_menu():
-    citas = tk.Toplevel()
+def appointments_menu(parent=None):
+    citas = tk.Toplevel(parent)
     citas.title("Gestión de Citas")
     citas.geometry("1000x550")
     citas.config(bg="#ffffff")
@@ -41,12 +42,13 @@ def appointments_menu():
         valores_servicio = []
         messagebox.showerror("Error de BD", f"No se pudieron cargar los servicios:\n{e}")
 
-    combo_servicio = ttk.Combobox(frame_form, width=25, values=valores_servicio, state="readonly")
+    combo_servicio = ttk.Combobox(frame_form, width=40, values=valores_servicio, state="readonly")
     combo_servicio.grid(row=2, column=1, padx=10, pady=5)
     combo_servicio.set("Seleccione un servicio")
 
-    ttk.Label(frame_form, text="Fecha (DD-MM-AAAA):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
-    entry_fecha = ttk.Entry(frame_form, width=25)
+    ttk.Label(frame_form, text="Fecha:").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_fecha = DateEntry(
+        frame_form,width=22, background="#000000", foreground="white",borderwidth=2, date_pattern="dd-mm-yyyy", showweeknumbers=False)
     entry_fecha.grid(row=3, column=1, padx=10, pady=5)
 
     ttk.Label(frame_form, text="Hora (HH:MM):").grid(row=4, column=0, padx=10, pady=5, sticky="e")
@@ -64,7 +66,7 @@ def appointments_menu():
     ttk.Button(frame_botones, text="Atender", style="Accion.TButton", command=lambda: atender_cita()).pack(fill="x", pady=6)
     ttk.Button(frame_botones, text="Eliminar", style="Accion.TButton", command=lambda: eliminar_cita()).pack(fill="x", pady=6)
     ttk.Button(frame_botones, text="Actualizar lista", style="Accion.TButton", command=lambda: cargar_citas()).pack(fill="x", pady=6)
-    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=citas.destroy).pack(fill="x", pady=6)
+    ttk.Button(frame_botones, text="Salir", style="Accion.TButton", command=lambda: back_to_menu(citas, parent)).pack(fill="x", pady=6)
 
     for col, text in zip(columns, ["ID", "Cliente", "Servicio", "Fecha", "Hora", "Estado"]):
         tabla.heading(col, text=text)
@@ -101,11 +103,11 @@ def appointments_menu():
             fecha = fecha1.strftime("%Y-%m-%d")
             servicio_id = servicio.split(" - ")[0].strip()
 
-            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
-            cita_existente  = appointment_db.iterable_db(consulta)
+            consulta = f"""SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND appointment_date = '{fecha}'"""
+            cita_existente = appointment_db.iterable_db(consulta)
 
             if cita_existente:
-                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora.")
+                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora y fecha.")
                 return
 
             gen_db_x.execute("""
@@ -150,11 +152,11 @@ def appointments_menu():
             fecha = fecha1.strftime("%Y-%m-%d")
             servicio_id = servicio.split(" - ")[0].strip()
 
-            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
-            citas_misma_hora = appointment_db.iterable_db(consulta)
+            consulta = f"""SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND appointment_date = '{fecha}'"""
+            cita_existente = appointment_db.iterable_db(consulta)
 
-            if citas_misma_hora:
-                messagebox.showwarning("Conflicto", f"Ya existe otra cita registrada a las {hora}.")
+            if cita_existente:
+                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora y fecha.")
                 return
 
             gen_db_x.execute("""
@@ -236,5 +238,10 @@ def appointments_menu():
         combo_servicio.set("Seleccione un servicio")
         entry_fecha.delete(0, tk.END)
         entry_hora.delete(0, tk.END)
+
+    def back_to_menu(citas, parent):
+        citas.destroy()
+        if parent is not None:
+            parent.deiconify()
 
     cargar_citas()

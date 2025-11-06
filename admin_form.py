@@ -1,16 +1,16 @@
-
 import os
 import tkinter as tk
 from tkinter.messagebox import showerror
+from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
 from PIL import Image, ImageTk
-from tkinter import ttk
-from tkinter import messagebox
 import json
-from pyuiWidgets.imageLabel import ImageLabel
 import psycopg2
-from general_processes import *
 import datetime
 import random
+from pyuiWidgets.imageLabel import ImageLabel
+from general_processes import *
+from Provedores_y_categorias_form import categories_menu, providers_menu
 
 PASSWORD_FILE = "password.json"
 DEFAULT_PASSWORD = "123"
@@ -47,7 +47,6 @@ class Lord:
 lord = Lord()
 
 
-
 def get_info(frame, entry, main_window):
     temp_pass = entry.get()
     if temp_pass == lord.contra:
@@ -79,17 +78,12 @@ def login(prev_window):
     gen_style = ttk.Style(login_form)
     gen_style.theme_use("clam")
     gen_style.configure("Custom.TButton",
-                        background="#F5F1F0",
-                        font=('Arial', 10),
-                        bordercolor="#000000",
-                        darkcolor="#000000",
-                        lightcolor="#333333",
-                        padding=3)
+                        background="#F5F1F0", font=('Arial', 10), padding=3)
 
-    pass_label = tk.Label(login_form, text="CONTRASEÑA:", background="#ffffff", foreground="#000000")
+    pass_label = tk.Label(login_form, text="CONTRASEÑA:", background="#F5F1F0")
     pass_label.grid(row=0, column=0, padx=10, pady=30, sticky="w")
 
-    pass_text = tk.Entry(login_form, background="#000000", foreground="#ffffff", show="*")
+    pass_text = tk.Entry(login_form, background="#F5F1F0", show="*")
     pass_text.grid(row=0, column=0, padx=100, pady=30, sticky="w")
 
     button_get = ttk.Button(login_form, text="Log In",
@@ -98,11 +92,26 @@ def login(prev_window):
     button_get.grid(row=0, column=0, padx=290, pady=(50, 10), sticky="ew")
 
 
-def gen_report(fdate, sdate, treeview):
-    if check_date(fdate.get()) and check_date(sdate.get()):
-        gen_db_x.reports("SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;", (fdate.get(), sdate.get()), treeview)
-    else:
-        messagebox.showerror("ERROR", "Fecha inválida")
+
+def gen_report_calendar(fdate_widget, sdate_widget, treeview):
+    try:
+        fecha_inicio = fdate_widget.get_date()
+        fecha_fin = sdate_widget.get_date()
+
+        if fecha_inicio > fecha_fin:
+            messagebox.showerror("ERROR", "La fecha de inicio debe ser anterior a la fecha final")
+            return
+
+        fecha_inicio_str = fecha_inicio.strftime('%Y-%m-%d')
+        fecha_fin_str = fecha_fin.strftime('%Y-%m-%d')
+
+        gen_db_x.reports(
+            "SELECT * FROM sales_details WHERE sale_date BETWEEN %s AND %s;",
+            (fecha_inicio_str, fecha_fin_str),
+            treeview
+        )
+    except Exception as e:
+        messagebox.showerror("ERROR", f"Error al generar el reporte: {e}")
 
 
 def reportes(menu, main_frame, frame_reportes, style, form):
@@ -113,46 +122,57 @@ def reportes(menu, main_frame, frame_reportes, style, form):
     frame_reportes.grid_columnconfigure(0, weight=0)
     frame_reportes.grid_columnconfigure(1, weight=1)
 
-    first_date_label = tk.Label(frame_reportes, text="Fecha de inicio:", background="#000000", foreground="#ffffff")
+    # Fecha inicio
+    first_date_label = tk.Label(frame_reportes, text="Fecha de inicio:", background="#F5F1F0")
     first_date_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
-    first_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
+    first_date_entry = DateEntry(
+        frame_reportes,
+        width=20,
+        background='#F5F1F0',
+        foreground='black',
+        borderwidth=2,
+        date_pattern='yyyy-mm-dd',
+        locale='es_ES'
+    )
     first_date_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
-    first_date_entry.insert(0, "AAAA-MM-DD")
 
-    second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#000000", foreground="#ffffff")
+    # Fecha final
+    second_date_label = tk.Label(frame_reportes, text="Fecha Final:", background="#F5F1F0")
     second_date_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
-    second_date_entry = tk.Entry(frame_reportes, background="#000000", foreground="#ffffff")
+    second_date_entry = DateEntry(
+        frame_reportes,
+        width=20,
+        background='#F5F1F0',
+        foreground='black',
+        borderwidth=2,
+        date_pattern='yyyy-mm-dd',
+        locale='es_ES'
+    )
     second_date_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
-    second_date_entry.insert(0, "AAAA-MM-DD")
+
 
     report_table = ttk.Treeview(frame_reportes, columns=("1", "2", "3", "4", "5", "6", "7", "8"), show="headings")
-    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio", "6": "Fecha", "7": "Cantidad", "8": "Precio"}
+    column_map = {"1": "ID", "2": "Venta", "3": "Cliente", "4": "Producto", "5": "Servicio",
+                  "6": "Fecha", "7": "Cantidad", "8": "Precio"}
     for col_id, text in column_map.items():
         report_table.heading(col_id, text=text, anchor=tk.CENTER)
 
-    report_table.column("1", width=30, anchor=tk.CENTER, stretch=tk.NO)
-    report_table.column("2", width=100, anchor=tk.CENTER)
-    report_table.column("3", width=120, anchor=tk.W)
-    report_table.column("4", width=120, anchor=tk.W)
-    report_table.column("5", width=60, anchor=tk.E)
-    report_table.column("6", width=60, anchor=tk.E)
-    report_table.column("7", width=60, anchor=tk.E)
-    report_table.column("8", width=60, anchor=tk.E)
-
+    for col in column_map.keys():
+        report_table.column(col, width=100, anchor=tk.CENTER)
     report_table.grid(row=2, column=0, columnspan=2, padx=10, pady=15, sticky="nsew")
     frame_reportes.grid_rowconfigure(3, weight=1)
 
-    save_button = ttk.Button(frame_reportes, text="GENERAR", style="Custom.TButton",
-                             command=lambda: gen_report(first_date_entry, second_date_entry, report_table))
+
+    save_button = ttk.Button(
+        frame_reportes,text="GENERAR",style="Custom.TButton",command=lambda: gen_report_calendar(first_date_entry, second_date_entry, report_table))
     save_button.grid(row=4, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
-    exit_button = ttk.Button(frame_reportes, text="SALIR", style="Custom.TButton",
-                             command=lambda: close_tabs(menu, main_frame, frame_reportes))
+    exit_button = ttk.Button(
+        frame_reportes, text="SALIR", style="Custom.TButton", command=lambda: close_tabs(menu, main_frame, frame_reportes))
     exit_button.grid(row=5, column=0, columnspan=2, padx=200, pady=(10, 50), sticky="ew")
 
     menu.add(frame_reportes, text="REPORTES")
     menu.select(frame_reportes)
-
 def check_date(date_str):
     try:
         temp_date = date_str.split("-")
@@ -196,34 +216,34 @@ def agregar_producto(menu, main_frame, frame_add_prods, style):
     frame_add_prods.grid_columnconfigure(0, weight=0)
     frame_add_prods.grid_columnconfigure(1, weight=1)
 
-    prodname_label = tk.Label(frame_add_prods, text="Nombre del producto:", background="#000000", foreground="#ffffff")
+    prodname_label = tk.Label(frame_add_prods, text="Nombre del producto:", background="#F5F1F0")
     prodname_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
-    prodname_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    prodname_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     prodname_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
 
-    brand_label = tk.Label(frame_add_prods, text="Marca:", background="#000000", foreground="#ffffff")
+    brand_label = tk.Label(frame_add_prods, text="Marca:", background="#F5F1F0")
     brand_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
-    brand_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    brand_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     brand_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
 
-    cat_label = tk.Label(frame_add_prods, text="Categoría:", background="#000000", foreground="#ffffff")
+    cat_label = tk.Label(frame_add_prods, text="Categoría:", background="#F5F1F0")
     cat_label.grid(row=2, column=0, padx=10, pady=5, sticky="nw")
-    cat_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    cat_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     cat_entry.grid(row=2, column=1, padx=10, pady=5, sticky="new")
 
-    price_label = tk.Label(frame_add_prods, text="Precio:", background="#000000", foreground="#ffffff")
+    price_label = tk.Label(frame_add_prods, text="Precio:", background="#F5F1F0")
     price_label.grid(row=3, column=0, padx=10, pady=5, sticky="nw")
-    price_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    price_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     price_entry.grid(row=3, column=1, padx=10, pady=5, sticky="new")
 
-    stock_label = tk.Label(frame_add_prods, text="Cantidad:", background="#000000", foreground="#ffffff")
+    stock_label = tk.Label(frame_add_prods, text="Cantidad:", background="#F5F1F0")
     stock_label.grid(row=4, column=0, padx=10, pady=5, sticky="nw")
-    stock_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    stock_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     stock_entry.grid(row=4, column=1, padx=10, pady=5, sticky="new")
 
-    sup_label = tk.Label(frame_add_prods, text="Proveedor:", background="#000000", foreground="#ffffff")
+    sup_label = tk.Label(frame_add_prods, text="Proveedor:", background="#F5F1F0",)
     sup_label.grid(row=5, column=0, padx=10, pady=5, sticky="nw")
-    sup_entry = tk.Entry(frame_add_prods, background="#000000", foreground="#ffffff")
+    sup_entry = tk.Entry(frame_add_prods, background="#F5F1F0")
     sup_entry.grid(row=5, column=1, padx=10, pady=5, sticky="new")
 
     frame_add_prods.grid_rowconfigure(6, weight=1)
@@ -252,16 +272,16 @@ def change_pass(menu, main_frame, password_frame, style):
     password_frame.grid_columnconfigure(0, weight=0)
     password_frame.grid_columnconfigure(1, weight=1)
 
-    pass_label = tk.Label(password_frame, text="Nueva Contraseña:", background="#000000", foreground="#ffffff")
+    pass_label = tk.Label(password_frame, text="Nueva Contraseña:", background="#F5F1F0")
     pass_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-    pass_text = tk.Entry(password_frame, background="#000000", foreground="#ffffff", show="*")
+    pass_text = tk.Entry(password_frame, background="#F5F1F0", show="*")
     pass_text.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
-    c_pass_label = tk.Label(password_frame, text="Confirmación de Contraseña:", background="#000000", foreground="#ffffff")
+    c_pass_label = tk.Label(password_frame, text="Confirmación de Contraseña:", background="#F5F1F0")
     c_pass_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-    c_pass_entry = tk.Entry(password_frame, background="#000000", foreground="#ffffff", show="*")
+    c_pass_entry = tk.Entry(password_frame, background="#F5F1F0", show="*")
     c_pass_entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
     password_frame.grid_rowconfigure(2, weight=1)
@@ -301,14 +321,14 @@ def add_service(menu, main_frame, new_service_frame, style):
     new_service_frame.grid_columnconfigure(0, weight=0)
     new_service_frame.grid_columnconfigure(1, weight=1)
 
-    svc_name_label = tk.Label(new_service_frame, text="Nombre del Servicio:", background="#000000", foreground="#ffffff")
+    svc_name_label = tk.Label(new_service_frame, text="Nombre del Servicio:", background="#F5F1F0")
     svc_name_label.grid(row=0, column=0, padx=10, pady=5, sticky="nw")
-    svc_name_entry = tk.Entry(new_service_frame, background="#000000", foreground="#ffffff")
+    svc_name_entry = tk.Entry(new_service_frame, background="#F5F1F0")
     svc_name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="new")
 
-    svc_price_label = tk.Label(new_service_frame, text="Precio:", background="#000000", foreground="#ffffff")
+    svc_price_label = tk.Label(new_service_frame, text="Precio:", background="#F5F1F0")
     svc_price_label.grid(row=1, column=0, padx=10, pady=5, sticky="nw")
-    svc_price_entry = tk.Entry(new_service_frame, background="#000000", foreground="#ffffff")
+    svc_price_entry = tk.Entry(new_service_frame, background="#F5F1F0")
     svc_price_entry.grid(row=1, column=1, padx=10, pady=5, sticky="new")
 
     new_service_frame.grid_rowconfigure(6, weight=1)
@@ -582,7 +602,7 @@ def admin_menu(prev_window):
     admin_style = ttk.Style(admin_form)
     admin_style.theme_use("clam")
 
-    admin_style.configure("Custom.TButton", background="#000000", foreground="#ffffff", font=('Arial', 10), bordercolor="#000000", darkcolor="#000000", lightcolor="#333333", padding=10)
+    admin_style.configure("Custom.TButton", background="#F5F1F0", font=('Arial', 10), bordercolor="#000000", darkcolor="#000000", lightcolor="#333333", padding=10)
 
     inside_menu = ttk.Notebook(admin_form)
     inside_menu.pack(expand=True, fill="both", padx=10, pady=10)
@@ -615,17 +635,23 @@ def admin_menu(prev_window):
     ttk.Button(frame_menu_inicial, text="AGREGAR SERVICIO", style="Custom.TButton",
                command=lambda: add_service(inside_menu, frame_menu_inicial, frame_add_svc, admin_style)).grid(row=1, column=0, padx=250, pady=10, sticky="ew")
 
+    ttk.Button(frame_menu_inicial, text="AGREGAR CATEGORÍA", style="Custom.TButton",
+               command=categories_menu).grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+
+    ttk.Button(frame_menu_inicial,text="AGREGAR PROVEEDOR",style="Custom.TButton",
+        command=providers_menu).grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+
     ttk.Button(frame_menu_inicial, text="CAMBIAR CONTRASEÑA", style="Custom.TButton",
-               command=lambda: change_pass(inside_menu, frame_menu_inicial, frame_cambio_c, admin_style)).grid(row=2, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: change_pass(inside_menu, frame_menu_inicial, frame_cambio_c, admin_style)).grid(row=4, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="REPORTES", style="Custom.TButton",
-               command=lambda: reportes(inside_menu, frame_menu_inicial, frame_reports, admin_style, admin_form)).grid(row=3, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: reportes(inside_menu, frame_menu_inicial, frame_reports, admin_style, admin_form)).grid(row=5, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="MODIFICAR/ELIMINAR REGISTROS", style="Custom.TButton",
-               command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style)).grid(row=4, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: modify_eliminate(inside_menu, frame_menu_inicial, admin_style)).grid(row=6, column=0, padx=250, pady=10, sticky="ew")
 
     ttk.Button(frame_menu_inicial, text="SALIR", style="Custom.TButton",
-               command=lambda: admin_form.destroy()).grid(row=5, column=0, padx=250, pady=10, sticky="ew")
+               command=lambda: admin_form.destroy()).grid(row=7, column=0, padx=250, pady=10, sticky="ew")
 
     admin_form.mainloop()
 

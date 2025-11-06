@@ -53,7 +53,9 @@ class Main_Program:
         style.configure("button1.TButton", background="#000000", foreground="#ffffff")
         style.map("button1.TButton", background=[("active", "#E4E2E2")], foreground=[("active", "#000")])
 
-        button1 = ttk.Button(master=main, text="CITAS", style="button1.TButton", command=lambda: appointments_menu())
+        button1 = ttk.Button(master=main, text="CITAS", style="button1.TButton",
+                             command=lambda: [main.withdraw(), appointments_menu(main)])
+
         button1.place(x=55, y=40, width=175, height=48)
 
         style.configure("button2.TButton", background="#000000", foreground="#ffffff")
