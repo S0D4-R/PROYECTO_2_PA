@@ -198,14 +198,17 @@ def add_new_prod(name_e, brand_e, categ_e, price_e, stock_e, supp_e):
         prod_stock = int(stock_e.get())
         prod_supplier = supp_e.get()
 
-        gen_db_x.execute("""
-            INSERT INTO barbershop_products 
-            (product_name, brand, category, price, stock_quantity, supplier) 
-            VALUES (%s, %s, %s, %s, %s, %s); 
-        """, (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier))
-        messagebox.showinfo("ÉXITO", f"Producto '{prod_name}' guardado con éxito.")
+        if prod_price < 0 or prod_stock < 0:
+            raise ValueError
+        else:
+            gen_db_x.execute("""
+                INSERT INTO barbershop_products 
+                (product_name, brand, category, price, stock_quantity, supplier) 
+                VALUES (%s, %s, %s, %s, %s, %s); 
+            """, (prod_name, prod_brand, prod_category, prod_price, prod_stock, prod_supplier))
+            messagebox.showinfo("ÉXITO", f"Producto '{prod_name}' guardado con éxito.")
     except ValueError:
-        messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos.")
+        messagebox.showerror("ERROR DE DATOS", "El Precio y la Cantidad deben ser números válidos mayores a 0.")
     except Exception as e:
         messagebox.showerror("ERROR AL AGREGAR PRODUCTOS", f"Error en la base de datos: {e}")
 
