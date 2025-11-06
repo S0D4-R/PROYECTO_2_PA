@@ -116,7 +116,7 @@ def gen_report_calendar(fdate_widget, sdate_widget, treeview):
 
 def reportes(menu, main_frame, frame_reportes, style, form):
     menu.select(frame_reportes)
-    form.geometry("700x600")
+    form.geometry("900x600")
     style.configure("Custom.TButton")
 
     frame_reportes.grid_columnconfigure(0, weight=0)

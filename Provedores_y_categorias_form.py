@@ -31,8 +31,8 @@ def categories_menu():
             con = gen_db_x._get_conn()
             cur = con.cursor()
             cur.execute(
-                "INSERT INTO b_categories (id, category_name, description, created_at) VALUES (%s, %s, %s, %s)",
-                (id_categoria, nombre, descripcion, datetime.datetime.now())
+                "INSERT INTO product_categories (id, category_name, description) VALUES (%s, %s, %s)",
+                (id_categoria, nombre, descripcion)
             )
             con.commit()
             con.close()
@@ -84,7 +84,7 @@ def providers_menu():
             id_prov = id_creation("P")
             con = gen_db_x._get_conn()
             cur = con.cursor()
-            cur.execute("INSERT INTO b_providers (id, provider_name, contact_email, phone_number) VALUES (%s, %s, %s, %s);",
+            cur.execute("INSERT INTO product_providers (id, provider_name, contact_email, phone_number) VALUES (%s, %s, %s, %s);",
                         (id_prov, nombre, email, telefono))
             con.commit()
             con.close()
