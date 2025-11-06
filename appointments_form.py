@@ -101,11 +101,11 @@ def appointments_menu():
             fecha = fecha1.strftime("%Y-%m-%d")
             servicio_id = servicio.split(" - ")[0].strip()
 
-            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
-            cita_existente  = appointment_db.iterable_db(consulta)
+            consulta = f"""SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND appointment_date = '{fecha}'"""
+            cita_existente = appointment_db.iterable_db(consulta)
 
             if cita_existente:
-                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora.")
+                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora y fecha.")
                 return
 
             gen_db_x.execute("""
@@ -150,11 +150,11 @@ def appointments_menu():
             fecha = fecha1.strftime("%Y-%m-%d")
             servicio_id = servicio.split(" - ")[0].strip()
 
-            consulta = f"SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND id <> '{id_cita}'"
-            citas_misma_hora = appointment_db.iterable_db(consulta)
+            consulta = f"""SELECT id FROM barbershop_appointments WHERE appointment_time = '{hora}' AND appointment_date = '{fecha}'"""
+            cita_existente = appointment_db.iterable_db(consulta)
 
-            if citas_misma_hora:
-                messagebox.showwarning("Conflicto", f"Ya existe otra cita registrada a las {hora}.")
+            if cita_existente:
+                messagebox.showwarning("Conflicto", "Ya existe una cita registrada en esa hora y fecha.")
                 return
 
             gen_db_x.execute("""
