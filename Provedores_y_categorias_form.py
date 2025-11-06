@@ -4,8 +4,8 @@ from general_processes import gen_db_x, id_creation
 import datetime
 
 def centrar_ventana(ventana, ancho, alto):
-    """Centrar cualquier ventana en pantalla"""
-    ventana.update_idletasks()  # Asegura que la ventana conozca su tamaño
+
+    ventana.update_idletasks()
     screen_width = ventana.winfo_screenwidth()
     screen_height = ventana.winfo_screenheight()
     center_x = (screen_width // 2) - (ancho // 2)
