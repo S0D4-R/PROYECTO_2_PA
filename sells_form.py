@@ -53,6 +53,11 @@ class DataBase_Sells(DataBaseX):
                                     INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
                                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                                 """, (sale_id, client_id, item_id, None, fecha, cantidad, precio))
+                cur.execute("""
+                               UPDATE barbershop_products
+                               SET stock_quantity = stock_quantity - %s
+                               WHERE id = %s
+                           """, (cantidad, item_id))
             else:
                 cur.execute("""
                                     INSERT INTO sales_details (sale_id, client_id, product_id, service_id, sale_date, quantity_sold, service_price)
